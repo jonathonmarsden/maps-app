@@ -14,6 +14,12 @@ export interface MapDefinition {
   // In a real app, this might be a URL to a fetchable GeoJSON file
   geoJsonData?: any; 
   enable3d?: boolean;
+  sources?: {
+    id: string;
+    type: 'geojson'; // Currently only supporting geojson
+    data: string | any;
+    layers: any[];
+  }[];
 }
 
 export const mapRegistry: Record<string, MapDefinition> = {
@@ -30,6 +36,82 @@ export const mapRegistry: Record<string, MapDefinition> = {
     },
     geoJsonData: melbourneMetroData,
     enable3d: true
+  },
+  'disc-golf-analyser': {
+    id: 'disc-golf-analyser',
+    title: 'Disc Golf Location Analyser',
+    description: 'Analysis of potential disc golf course locations in Melbourne, accounting for exclusion zones and existing courses.',
+    initialViewState: {
+      longitude: 145.0,
+      latitude: -37.8,
+      zoom: 10
+    },
+    sources: [
+      {
+        id: 'exclusion-zones',
+        type: 'geojson',
+        data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
+        layers: [
+          {
+            id: 'exclusion-fill',
+            type: 'fill',
+            paint: {
+              'fill-color': '#ff3333',
+              'fill-opacity': 0.2,
+              'fill-outline-color': '#ff3333'
+            }
+          }
+        ]
+      },
+      {
+        id: 'candidates',
+        type: 'geojson',
+        data: '/data/disc-golf/candidates_optimization_needed.geojson',
+        layers: [
+          {
+            id: 'candidates-fill',
+            type: 'fill',
+            paint: {
+              'fill-color': '#ccff00',
+              'fill-opacity': 0.4,
+              'fill-outline-color': '#ccff00'
+            }
+          }
+        ]
+      },
+      {
+        id: 'existing-courses',
+        type: 'geojson',
+        data: '/data/disc-golf/existing_courses.geojson',
+        layers: [
+          {
+            id: 'existing-circles',
+            type: 'circle',
+            paint: {
+              'circle-radius': 8,
+              'circle-color': '#00ffff',
+              'circle-stroke-width': 2,
+              'circle-stroke-color': '#ffffff'
+            }
+          },
+          {
+            id: 'existing-labels',
+            type: 'symbol',
+            layout: {
+              'text-field': ['get', 'name'],
+              'text-offset': [0, 1.5],
+              'text-size': 12,
+              'text-variable-anchor': ['top', 'bottom', 'left', 'right']
+            },
+            paint: {
+              'text-color': '#ffffff',
+              'text-halo-color': '#000000',
+              'text-halo-width': 2
+            }
+          }
+        ]
+      }
+    ]
   },
   'melbourne-districts': {
     id: 'melbourne-districts',

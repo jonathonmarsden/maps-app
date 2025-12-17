@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+"name": "existing_courses",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Ruffey Lake Disc Golf", "lat": -37.776013, "lon": 145.141227 }, "geometry": { "type": "Point", "coordinates": [ 145.141227, -37.776013 ] } },
+{ "type": "Feature", "properties": { "name": "Stony Creek Disc Golf", "lat": -37.82513, "lon": 144.893332 }, "geometry": { "type": "Point", "coordinates": [ 144.893332, -37.82513 ] } },
+{ "type": "Feature", "properties": { "name": "Bald Hill Park Disc Golf", "lat": -37.932452, "lon": 145.107071 }, "geometry": { "type": "Point", "coordinates": [ 145.107071, -37.932452 ] } },
+{ "type": "Feature", "properties": { "name": "Llewellyn Park Disc Golf", "lat": -37.883771, "lon": 145.218656 }, "geometry": { "type": "Point", "coordinates": [ 145.218656, -37.883771 ] } },
+{ "type": "Feature", "properties": { "name": "Little Blind Creek Disc Golf", "lat": -37.675565, "lon": 144.592397 }, "geometry": { "type": "Point", "coordinates": [ 144.592397, -37.675565 ] } },
+{ "type": "Feature", "properties": { "name": "Barwon Valley Disc Golf", "lat": -38.164547, "lon": 144.336935 }, "geometry": { "type": "Point", "coordinates": [ 144.336935, -38.164547 ] } }
+]
+}

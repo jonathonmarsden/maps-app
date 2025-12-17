@@ -11,13 +11,21 @@ interface MapViewProps {
     longitude: number;
     latitude: number;
     zoom: number;
+    pitch?: number;
+    bearing?: number;
   };
   geoJsonData?: any;
   enable3d?: boolean;
   title?: string;
+  sources?: {
+    id: string;
+    type: 'geojson';
+    data: string | any;
+    layers: any[];
+  }[];
 }
 
-export default function MapView({ initialViewState, geoJsonData, enable3d, title }: MapViewProps) {
+export default function MapView({ initialViewState, geoJsonData, enable3d, title, sources }: MapViewProps) {
   const defaultViewState = {
     longitude: 144.9631, // Melbourne
     latitude: -37.8136,
@@ -77,6 +85,15 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
             />
           </>
         )}
+
+        {/* Render Custom Sources */}
+        {sources?.map((source) => (
+          <Source key={source.id} id={source.id} type={source.type} data={source.data}>
+            {source.layers.map((layer) => (
+              <Layer key={layer.id} {...layer} />
+            ))}
+          </Source>
+        ))}
 
         {geoJsonData && (
           <Source id="main-data" type="geojson" data={geoJsonData}>
