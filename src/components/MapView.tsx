@@ -155,7 +155,8 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
 
               {/* Priority Ranking Toggle */}
               <div className="mb-4">
-                <div className="text-xs font-semibold text-neutral-700 mb-2.5">Priority Ranking</div>
+                <div className="text-xs font-semibold text-neutral-700 mb-1.5">Priority Ranking</div>
+                <p className="text-[11px] text-neutral-500 mb-3">Toggle each priority level on/off to show or hide sites from the map.</p>
                 <div className="space-y-1.5">
                   {[
                     { rank: 5, label: 'Highest Priority', color: '#4a1486', desc: '1.19–1.62M people' },
@@ -221,30 +222,16 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
 
             {/* SECTION 2: CURRENT COURSES & ACCESS ZONES */}
             <div className="border-t border-neutral-200 pt-4">
-              <button
-                onClick={() => setShowAccessZones(!showAccessZones)}
-                className="w-full text-left flex items-center justify-between p-2 hover:bg-neutral-50 rounded transition-colors mb-2"
-              >
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-600">
-                    Existing Courses & Reach
-                  </h3>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">
-                    20-minute accessible area by transport mode
-                  </p>
-                </div>
-                <svg
-                  className={`w-4 h-4 text-neutral-500 transition-transform ${showAccessZones ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </button>
+              <div className="mb-3">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-600 mb-1.5">
+                  Existing Courses & Reach
+                </h3>
+                <p className="text-[11px] text-neutral-600 leading-relaxed">
+                  Toggle each layer on/off to view existing courses and their 20-minute accessible areas.
+                </p>
+              </div>
 
-              {showAccessZones && (
-                <div className="space-y-2 ml-1">
+              <div className="space-y-2">
                   {/* Existing Courses */}
                   <div className="flex items-center gap-3 p-2.5 rounded hover:bg-neutral-50 transition-colors">
                     <div className="w-5 h-5 rounded-full bg-red-600 border-2 border-red-700 flex-shrink-0" />
