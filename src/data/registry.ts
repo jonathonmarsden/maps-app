@@ -253,7 +253,7 @@ Next.js, React, Mapbox GL JS, Python (GeoPandas)
             id: 'existing-courses-glow',
             type: 'circle',
             paint: {
-              'circle-radius': 18,
+              'circle-radius': 9,
               'circle-color': '#e31a1c',
               'circle-opacity': 0.3,
               'circle-blur': 0.8
@@ -263,7 +263,7 @@ Next.js, React, Mapbox GL JS, Python (GeoPandas)
             id: 'existing-courses-point',
             type: 'circle',
             paint: {
-              'circle-radius': 10,
+              'circle-radius': 5,
               'circle-color': '#e31a1c',
               'circle-stroke-width': 0
             }
