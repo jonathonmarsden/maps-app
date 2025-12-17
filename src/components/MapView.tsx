@@ -28,9 +28,10 @@ interface MapViewProps {
     layers: any[];
   }[];
   methodology?: string; // Markdown or text for the methodology modal
+  onMethodologyOpen?: () => void; // Callback when methodology should be shown
 }
 
-export default function MapView({ initialViewState, geoJsonData, enable3d, title, sources, methodology }: MapViewProps) {
+export default function MapView({ initialViewState, geoJsonData, enable3d, title, sources, methodology, onMethodologyOpen }: MapViewProps) {
   const defaultViewState = {
     longitude: 144.9631, // Melbourne
     latitude: -37.8136,
@@ -40,7 +41,6 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   // State to track visibility of each source
   const [visibility, setVisibility] = React.useState<Record<string, boolean>>({});
   const [rankVisibility, setRankVisibility] = React.useState<Record<number, boolean>>({});
-  const [showMethodology, setShowMethodology] = React.useState(false);
 
   // Initialize visibility when sources change
   React.useEffect(() => {
@@ -75,42 +75,14 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
 
   return (
     <div className="w-full h-screen relative">
-      {/* Methodology Button */}
-      {methodology && (
-        <div className="absolute top-4 left-4 z-10">
-          <button 
-            onClick={() => setShowMethodology(true)}
-            className="bg-white/90 hover:bg-white text-black px-4 py-2 rounded shadow-md font-semibold text-sm backdrop-blur-sm transition-colors"
-          >
-            Methodology
-          </button>
-        </div>
-      )}
-
-      {/* Methodology Modal */}
-      {showMethodology && methodology && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white text-black p-6 rounded-lg shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto relative">
-            <button 
-              onClick={() => setShowMethodology(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-black"
-            >
-              ✕
-            </button>
-            <h2 className="text-2xl font-bold mb-4">Methodology</h2>
-            <div className="prose prose-sm max-w-none">
-              <ReactMarkdown>{methodology}</ReactMarkdown>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Legend / Key */}
       {sources && sources.length > 0 && (
         <div className="absolute bottom-8 right-4 z-10 bg-white/90 text-black p-4 rounded-lg backdrop-blur-sm border border-neutral-200 shadow-xl min-w-[240px] max-h-[500px] overflow-y-auto">
           <h3 className="text-sm font-bold mb-3 uppercase tracking-wider text-neutral-600">Map Layers</h3>
           <div className="space-y-3">
-            {sources.map((source) => (
+            {sources
+              .filter(source => source.id !== 'exclusions') // Hide exclusions from legend
+              .map((source) => (
               <div key={source.id}>
                 <div 
                   className="flex items-center justify-between cursor-pointer hover:bg-black/5 p-1 rounded transition-colors"

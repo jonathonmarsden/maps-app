@@ -1,6 +1,7 @@
 import { getMap, getAllMaps } from '@/data/registry';
 import MapView from '@/components/MapView';
 import { notFound } from 'next/navigation';
+import MethodologyPanel from '@/components/MethodologyPanel';
 
 export async function generateStaticParams() {
   const maps = getAllMaps();
@@ -20,11 +21,12 @@ export default async function MapPage({ params }: { params: Promise<{ slug: stri
 
   return (
     <div className="relative w-full h-screen">
-      {/* Overlay Title */}
-      <div className="absolute top-4 left-4 z-20 bg-black/80 text-white p-4 rounded-lg backdrop-blur-sm max-w-md">
-        <h1 className="text-xl font-bold mb-1">{mapData.title}</h1>
-        <p className="text-sm text-gray-300">{mapData.description}</p>
-      </div>
+      {/* Overlay Title with Methodology */}
+      <MethodologyPanel 
+        title={mapData.title}
+        description={mapData.description}
+        methodology={mapData.methodology}
+      />
 
       <MapView 
         initialViewState={mapData.initialViewState} 

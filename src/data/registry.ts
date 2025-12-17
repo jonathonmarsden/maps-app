@@ -142,8 +142,7 @@ The goal of this tool is to identify underutilized public land that is highly ac
             paint: {
               'circle-radius': 10,
               'circle-color': '#e31a1c',
-              'circle-stroke-width': 3,
-              'circle-stroke-color': '#ffffff'
+              'circle-stroke-width': 0
             }
           },
           {
@@ -169,14 +168,14 @@ The goal of this tool is to identify underutilized public land that is highly ac
         label: 'Exclusion Zones',
         type: 'geojson',
         data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
-        color: '#999999',
+        color: '#cc0000',
         layers: [
           {
             id: 'exclusions-fill',
             type: 'fill',
             paint: {
-              'fill-color': '#999999',
-              'fill-opacity': 0.2
+              'fill-color': '#cc0000',
+              'fill-opacity': 0.35
             }
           }
         ]
