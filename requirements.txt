@@ -1,0 +1,8 @@
+geopandas
+pandas
+networkx
+shapely
+openpyxl
+pyogrio
+rtree
+simplekml

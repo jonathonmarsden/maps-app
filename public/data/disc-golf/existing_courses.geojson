@@ -3,11 +3,17 @@
 "name": "existing_courses",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
-{ "type": "Feature", "properties": { "name": "Ruffey Lake Disc Golf", "lat": -37.776013, "lon": 145.141227 }, "geometry": { "type": "Point", "coordinates": [ 145.141227, -37.776013 ] } },
-{ "type": "Feature", "properties": { "name": "Stony Creek Disc Golf", "lat": -37.82513, "lon": 144.893332 }, "geometry": { "type": "Point", "coordinates": [ 144.893332, -37.82513 ] } },
+{ "type": "Feature", "properties": { "name": "Ruffey Lake Park Disc Golf", "lat": -37.776013, "lon": 145.141227 }, "geometry": { "type": "Point", "coordinates": [ 145.141227, -37.776013 ] } },
+{ "type": "Feature", "properties": { "name": "Stony Creek Reserve Disc Golf", "lat": -37.82513, "lon": 144.893332 }, "geometry": { "type": "Point", "coordinates": [ 144.893332, -37.82513 ] } },
 { "type": "Feature", "properties": { "name": "Bald Hill Park Disc Golf", "lat": -37.932452, "lon": 145.107071 }, "geometry": { "type": "Point", "coordinates": [ 145.107071, -37.932452 ] } },
 { "type": "Feature", "properties": { "name": "Llewellyn Park Disc Golf", "lat": -37.883771, "lon": 145.218656 }, "geometry": { "type": "Point", "coordinates": [ 145.218656, -37.883771 ] } },
-{ "type": "Feature", "properties": { "name": "Little Blind Creek Disc Golf", "lat": -37.675565, "lon": 144.592397 }, "geometry": { "type": "Point", "coordinates": [ 144.592397, -37.675565 ] } },
-{ "type": "Feature", "properties": { "name": "Barwon Valley Disc Golf", "lat": -38.164547, "lon": 144.336935 }, "geometry": { "type": "Point", "coordinates": [ 144.336935, -38.164547 ] } }
+{ "type": "Feature", "properties": { "name": "Little Blind Creek Disc Golf (Melton)", "lat": -37.675565, "lon": 144.592397 }, "geometry": { "type": "Point", "coordinates": [ 144.592397, -37.675565 ] } },
+{ "type": "Feature", "properties": { "name": "Barwon Valley Disc Golf", "lat": -38.164547, "lon": 144.336935 }, "geometry": { "type": "Point", "coordinates": [ 144.336935, -38.164547 ] } },
+{ "type": "Feature", "properties": { "name": "Caulfield Racecourse Disc Golf", "lat": -37.880043, "lon": 145.039032 }, "geometry": { "type": "Point", "coordinates": [ 145.039032, -37.880043 ] } },
+{ "type": "Feature", "properties": { "name": "Heathdale Glen Orden Trial Course", "lat": -37.88184, "lon": 144.676024 }, "geometry": { "type": "Point", "coordinates": [ 144.676024, -37.88184 ] } },
+{ "type": "Feature", "properties": { "name": "Bundoora Park Disc Golf", "lat": -37.706247, "lon": 145.045139 }, "geometry": { "type": "Point", "coordinates": [ 145.045139, -37.706247 ] } },
+{ "type": "Feature", "properties": { "name": "Livingstone Primary School Disc Golf", "lat": -37.851527, "lon": 145.183976 }, "geometry": { "type": "Point", "coordinates": [ 145.183976, -37.851527 ] } },
+{ "type": "Feature", "properties": { "name": "Braeside Park Disc Golf", "lat": -37.990988, "lon": 145.125693 }, "geometry": { "type": "Point", "coordinates": [ 145.125693, -37.990988 ] } },
+{ "type": "Feature", "properties": { "name": "Bicentennial Park Disc Golf (Chelsea)", "lat": -38.048184, "lon": 145.125862 }, "geometry": { "type": "Point", "coordinates": [ 145.125862, -38.048184 ] } }
 ]
 }

@@ -14,10 +14,12 @@ export interface MapDefinition {
   // In a real app, this might be a URL to a fetchable GeoJSON file
   geoJsonData?: any; 
   enable3d?: boolean;
+  methodology?: string;
   sources?: {
     id: string;
     label?: string; // For the legend
     color?: string; // For the legend icon
+    legendItems?: { label: string; color: string }[];
     type: 'geojson'; // Currently only supporting geojson
     data: string | any;
     layers: any[];
@@ -39,10 +41,30 @@ export const mapRegistry: Record<string, MapDefinition> = {
     geoJsonData: melbourneMetroData,
     enable3d: true
   },
-  'disc-golf-analyser': {
-    id: 'disc-golf-analyser',
-    title: 'Disc Golf Location Analyser',
-    description: 'Analysis of potential disc golf course locations in Melbourne, accounting for exclusion zones and existing courses.',
+  'disc-golf-course-sieve': {
+    id: 'disc-golf-course-sieve',
+    title: 'Disc Golf Course Sieve',
+    description: 'Identifying the most suitable public land for new disc golf courses in Melbourne based on accessibility and land suitability.',
+    methodology: `**Methodology: The Sieve Process**
+
+The goal of this tool is to identify underutilized public land that is highly accessible to the community.
+
+**1. Candidate Extraction**
+*   **Source:** Vicmap Property (Crown Land) & OSM Parks.
+*   **Filters:** 
+    *   Must be Crown Land / Public Open Space.
+    *   Minimum Area: 2 Hectares (sufficient for 9 holes).
+    *   **Exclusions:** Schools, Sports Ovals, Airports, Golf Courses, and Cemeteries are removed.
+
+**2. Accessibility Scoring (The "20-Minute City")**
+*   We calculate a 20-minute walking/cycling isochrone for every candidate site.
+*   We sum the ABS Population (2024 ERP) living within that catchment.
+*   Sites are ranked 1 (Low) to 5 (High) based on the population served.
+
+**3. Ranking System**
+*   **Rank 5 (Purple):** Top 20% of sites (Highest population reach).
+*   **Rank 1 (Yellow):** Bottom 20% of sites.
+`,
     initialViewState: {
       longitude: 145.0,
       latitude: -37.8,
@@ -50,79 +72,111 @@ export const mapRegistry: Record<string, MapDefinition> = {
     },
     sources: [
       {
-        id: 'exclusion-zones',
-        label: 'Exclusion Zones (2.4km Buffer)',
-        color: '#ff3333',
-        type: 'geojson',
-        data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
-        layers: [
-          {
-            id: 'exclusion-fill',
-            type: 'fill',
-            paint: {
-              'fill-color': '#ff3333',
-              'fill-opacity': 0.1,
-              'fill-outline-color': '#ff3333'
-            }
-          }
-        ]
-      },
-      {
         id: 'candidates',
-        label: 'Candidate Locations',
-        color: '#ccff00',
+        label: 'Candidate Sites (Ranked)',
         type: 'geojson',
-        data: '/data/disc-golf/candidates_optimization_needed.geojson',
+        data: '/data/disc-golf/candidates.geojson',
+        legendItems: [
+          { label: 'Rank 5: Most Suitable', color: '#4a1486' }, // Deep Purple
+          { label: 'Rank 4', color: '#6a51a3' },
+          { label: 'Rank 3', color: '#9e9ac8' },
+          { label: 'Rank 2', color: '#cbc9e2' },
+          { label: 'Rank 1: Least Suitable', color: '#f2f0f7' }, // Very Light Purple
+        ],
         layers: [
           {
             id: 'candidates-fill',
             type: 'fill',
             paint: {
-              'fill-color': '#ccff00',
-              'fill-opacity': 0.15, // More transparent to see labels
+              'fill-color': [
+                'step',
+                ['get', 'rank'],
+                '#f2f0f7', // Default/Rank 1
+                2, '#cbc9e2',
+                3, '#9e9ac8',
+                4, '#6a51a3',
+                5, '#4a1486'
+              ],
+              'fill-opacity': 0.85,
+              'fill-outline-color': '#ffffff'
             }
           },
           {
-            id: 'candidates-outline',
-            type: 'line',
+            id: 'candidates-label',
+            type: 'symbol',
+            layout: {
+              'text-field': ['get', 'label'],
+              'text-size': 10,
+              'text-variable-anchor': ['center', 'top', 'bottom'],
+              'text-justify': 'auto'
+            },
             paint: {
-              'line-color': '#ccff00',
-              'line-width': 1,
-              'line-opacity': 0.8
-            }
+              'text-color': '#3f007d',
+              'text-halo-color': '#ffffff',
+              'text-halo-width': 1.5
+            },
+            minzoom: 12
           }
         ]
       },
       {
         id: 'existing-courses',
         label: 'Existing Courses',
-        color: '#00ffff',
         type: 'geojson',
         data: '/data/disc-golf/existing_courses.geojson',
+        color: '#e31a1c',
         layers: [
           {
-            id: 'existing-circles',
+            id: 'existing-courses-glow',
             type: 'circle',
             paint: {
-              'circle-radius': 6,
-              'circle-color': '#00ffff',
-              'circle-stroke-width': 2,
+              'circle-radius': 18,
+              'circle-color': '#e31a1c',
+              'circle-opacity': 0.3,
+              'circle-blur': 0.8
+            }
+          },
+          {
+            id: 'existing-courses-point',
+            type: 'circle',
+            paint: {
+              'circle-radius': 10,
+              'circle-color': '#e31a1c',
+              'circle-stroke-width': 3,
               'circle-stroke-color': '#ffffff'
             }
           },
           {
-            id: 'existing-labels',
+            id: 'existing-courses-label',
             type: 'symbol',
             layout: {
               'text-field': ['get', 'name'],
+              'text-size': 12,
+              'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
               'text-offset': [0, 1.5],
-              'text-size': 11,
-              'text-variable-anchor': ['top', 'bottom', 'left', 'right']
+              'text-anchor': 'top'
             },
             paint: {
-              'text-color': '#ffffff',
-              'text-halo-color': '#000000',
-              'text-halo-width': 2
+              'text-color': '#b10026',
+              'text-halo-color': '#ffffff',
+              'text-halo-width': 2.5
+            }
+          }
+        ]
+      },
+      {
+        id: 'exclusions',
+        label: 'Exclusion Zones',
+        type: 'geojson',
+        data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
+        color: '#999999',
+        layers: [
+          {
+            id: 'exclusions-fill',
+            type: 'fill',
+            paint: {
+              'fill-color': '#999999',
+              'fill-opacity': 0.2
             }
           }
         ]

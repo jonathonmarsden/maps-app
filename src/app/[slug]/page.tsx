@@ -33,6 +33,7 @@ export default async function MapPage({ params }: { params: Promise<{ slug: stri
         enable3d={mapData.enable3d}
         title={mapData.title}
         sources={mapData.sources}
+        methodology={mapData.methodology}
       />
     </div>
   );
