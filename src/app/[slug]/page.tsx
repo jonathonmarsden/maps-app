@@ -22,7 +22,9 @@ export default async function MapPage({ params }: { params: Promise<{ slug: stri
 
       <MapView 
         initialViewState={mapData.initialViewState} 
-        geoJsonData={mapData.geoJsonData} 
+        geoJsonData={mapData.geoJsonData}
+        enable3d={mapData.enable3d}
+        title={mapData.title}
       />
     </div>
   );

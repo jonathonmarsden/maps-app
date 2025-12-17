@@ -1,3 +1,5 @@
+import { melbourneMetroData } from './melbourne-metro';
+
 export interface MapDefinition {
   id: string;
   title: string;
@@ -6,12 +8,29 @@ export interface MapDefinition {
     longitude: number;
     latitude: number;
     zoom: number;
+    pitch?: number;
+    bearing?: number;
   };
   // In a real app, this might be a URL to a fetchable GeoJSON file
   geoJsonData?: any; 
+  enable3d?: boolean;
 }
 
 export const mapRegistry: Record<string, MapDefinition> = {
+  'melbourne-metro': {
+    id: 'melbourne-metro',
+    title: 'Melbourne Metro Tunnel',
+    description: '3D visualization of the new Metro Tunnel alignment.',
+    initialViewState: {
+      longitude: 144.9631,
+      latitude: -37.8136,
+      zoom: 13.5,
+      pitch: 60,
+      bearing: -20
+    },
+    geoJsonData: melbourneMetroData,
+    enable3d: true
+  },
   'melbourne-districts': {
     id: 'melbourne-districts',
     title: 'Melbourne Districts',
