@@ -21,10 +21,9 @@ export default async function MapPage({ params }: { params: Promise<{ slug: stri
   return (
     <div className="relative w-full h-screen">
       {/* Overlay Title */}
-      <div className="absolute top-4 left-4 z-10 bg-black/80 text-white p-4 rounded-lg backdrop-blur-sm max-w-md">
+      <div className="absolute top-4 left-4 z-20 bg-black/80 text-white p-4 rounded-lg backdrop-blur-sm max-w-md">
         <h1 className="text-xl font-bold mb-1">{mapData.title}</h1>
         <p className="text-sm text-gray-300">{mapData.description}</p>
-        <a href="/" className="text-xs text-blue-400 hover:underline mt-2 block">← Back to Atlas</a>
       </div>
 
       <MapView 

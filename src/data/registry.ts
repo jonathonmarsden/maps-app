@@ -77,11 +77,11 @@ The goal of this tool is to identify underutilized public land that is highly ac
         type: 'geojson',
         data: '/data/disc-golf/candidates.geojson',
         legendItems: [
-          { label: 'Rank 5: Most Suitable', color: '#4a1486' }, // Deep Purple
-          { label: 'Rank 4', color: '#6a51a3' },
-          { label: 'Rank 3', color: '#9e9ac8' },
-          { label: 'Rank 2', color: '#cbc9e2' },
-          { label: 'Rank 1: Least Suitable', color: '#f2f0f7' }, // Very Light Purple
+          { label: 'Rank 5: 1.19M–1.62M population reach', color: '#4a1486' }, // Deep Purple
+          { label: 'Rank 4: 616K–1.19M population reach', color: '#6a51a3' },
+          { label: 'Rank 3: 158K–616K population reach', color: '#9e9ac8' },
+          { label: 'Rank 2: 28K–158K population reach', color: '#cbc9e2' },
+          { label: 'Rank 1: 5–28K population reach', color: '#f2f0f7' }, // Very Light Purple
         ],
         layers: [
           {

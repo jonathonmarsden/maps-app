@@ -2,6 +2,7 @@
 import * as React from 'react';
 import Map, { Source, Layer, NavigationControl, ScaleControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import ReactMarkdown from 'react-markdown';
 
 // You will need to add NEXT_PUBLIC_MAPBOX_TOKEN to your .env.local file
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -38,6 +39,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
 
   // State to track visibility of each source
   const [visibility, setVisibility] = React.useState<Record<string, boolean>>({});
+  const [rankVisibility, setRankVisibility] = React.useState<Record<number, boolean>>({});
   const [showMethodology, setShowMethodology] = React.useState(false);
 
   // Initialize visibility when sources change
@@ -48,6 +50,12 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
         initialVisibility[s.id] = true;
       });
       setVisibility(initialVisibility);
+      // Initialize rank visibility (all ranks visible by default)
+      const initialRankVisibility: Record<number, boolean> = {};
+      for (let i = 1; i <= 5; i++) {
+        initialRankVisibility[i] = true;
+      }
+      setRankVisibility(initialRankVisibility);
     }
   }, [sources]);
 
@@ -55,6 +63,13 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     setVisibility(prev => ({
       ...prev,
       [id]: !prev[id]
+    }));
+  };
+
+  const toggleRankVisibility = (rank: number) => {
+    setRankVisibility(prev => ({
+      ...prev,
+      [rank]: !prev[rank]
     }));
   };
 
@@ -83,8 +98,8 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
               ✕
             </button>
             <h2 className="text-2xl font-bold mb-4">Methodology</h2>
-            <div className="prose prose-sm">
-              <p className="whitespace-pre-wrap">{methodology}</p>
+            <div className="prose prose-sm max-w-none">
+              <ReactMarkdown>{methodology}</ReactMarkdown>
             </div>
           </div>
         </div>
@@ -92,7 +107,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
 
       {/* Legend / Key */}
       {sources && sources.length > 0 && (
-        <div className="absolute bottom-8 right-4 z-10 bg-white/90 text-black p-4 rounded-lg backdrop-blur-sm border border-neutral-200 shadow-xl min-w-[240px]">
+        <div className="absolute bottom-8 right-4 z-10 bg-white/90 text-black p-4 rounded-lg backdrop-blur-sm border border-neutral-200 shadow-xl min-w-[240px] max-h-[500px] overflow-y-auto">
           <h3 className="text-sm font-bold mb-3 uppercase tracking-wider text-neutral-600">Map Layers</h3>
           <div className="space-y-3">
             {sources.map((source) => (
@@ -111,18 +126,24 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                   </div>
                 </div>
                 
-                {/* Sub-legend items (only if visible) */}
+                {/* Sub-legend items (individual rank toggles) */}
                 {visibility[source.id] && source.legendItems && (
-                  <div className="ml-2 mt-1 space-y-1 border-l-2 border-neutral-200 pl-2">
-                    {source.legendItems.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-sm shadow-sm" 
-                          style={{ backgroundColor: item.color }}
-                        />
-                        <span className="text-xs text-neutral-600">{item.label}</span>
-                      </div>
-                    ))}
+                  <div className="ml-2 mt-2 space-y-2 border-l-2 border-neutral-200 pl-2">
+                    {source.legendItems.map((item, idx) => {
+                      const rank = 5 - idx; // Rank 5 is first
+                      return (
+                        <div key={idx} className="flex items-center gap-2">
+                          <div 
+                            className="w-8 h-4 rounded-full relative cursor-pointer transition-colors"
+                            onClick={() => toggleRankVisibility(rank)}
+                            style={{ backgroundColor: rankVisibility[rank] ? item.color : '#d1d5db' }}
+                          >
+                            <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${rankVisibility[rank] ? 'left-4.5' : 'left-0.5'}`} />
+                          </div>
+                          <span className="text-xs text-neutral-600 flex-1">{item.label}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -186,16 +207,47 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
         {/* Render Custom Sources */}
         {sources?.map((source) => (
           <Source key={source.id} id={source.id} type={source.type} data={source.data}>
-            {source.layers.map((layer) => (
-              <Layer 
-                key={layer.id} 
-                {...layer} 
-                layout={{
-                  ...layer.layout,
-                  visibility: visibility[source.id] ? 'visible' : 'none'
-                }}
-              />
-            ))}
+            {source.layers.map((layer) => {
+              // Determine if this layer should be visible based on source and rank filters
+              let isVisible = visibility[source.id];
+              
+              // For rank-based filtering (candidates layer)
+              if (isVisible && layer.id === 'candidates-fill') {
+                // Dynamically update the filter based on rank visibility
+                const activeRanks = Object.entries(rankVisibility)
+                  .filter(([_, visible]) => visible)
+                  .map(([rank, _]) => parseInt(rank));
+                
+                if (activeRanks.length === 0) {
+                  isVisible = false;
+                } else if (activeRanks.length < 5) {
+                  // Create a filter for active ranks only
+                  const filter = ['in', ['get', 'rank'], ['literal', activeRanks]];
+                  return (
+                    <Layer 
+                      key={layer.id} 
+                      {...layer}
+                      filter={filter}
+                      layout={{
+                        ...layer.layout,
+                        visibility: isVisible ? 'visible' : 'none'
+                      }}
+                    />
+                  );
+                }
+              }
+              
+              return (
+                <Layer 
+                  key={layer.id} 
+                  {...layer} 
+                  layout={{
+                    ...layer.layout,
+                    visibility: isVisible ? 'visible' : 'none'
+                  }}
+                />
+              );
+            })}
           </Source>
         ))}
 
