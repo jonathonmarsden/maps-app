@@ -1,6 +1,13 @@
-import { getMap } from '@/data/registry';
+import { getMap, getAllMaps } from '@/data/registry';
 import MapView from '@/components/MapView';
 import { notFound } from 'next/navigation';
+
+export async function generateStaticParams() {
+  const maps = getAllMaps();
+  return maps.map((map) => ({
+    slug: map.id,
+  }));
+}
 
 // In Next.js 15, params is a Promise
 export default async function MapPage({ params }: { params: Promise<{ slug: string }> }) {
