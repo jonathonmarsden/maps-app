@@ -2,10 +2,26 @@
 import * as React from 'react';
 import Map, { Source, Layer, NavigationControl, ScaleControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import ReactMarkdown from 'react-markdown';
 
 // You will need to add NEXT_PUBLIC_MAPBOX_TOKEN to your .env.local file
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+// Toggle switch component
+const ToggleSwitch = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
+  <button
+    onClick={onChange}
+    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+      checked ? 'bg-blue-600' : 'bg-neutral-300'
+    }`}
+    aria-label="Toggle"
+  >
+    <span
+      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+        checked ? 'translate-x-5' : 'translate-x-0.5'
+      }`}
+    />
+  </button>
+);
 
 interface MapViewProps {
   initialViewState?: {
@@ -44,25 +60,6 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   const [minAreaHa, setMinAreaHa] = React.useState<number>(4); // Default to 4 ha for public view
   const [candidateFeatures, setCandidateFeatures] = React.useState<any[]>([]);
   const [candidateCount, setCandidateCount] = React.useState<number>(0);
-  const [showAccessZones, setShowAccessZones] = React.useState<boolean>(true);
-  
-  // Toggle switch component for reuse
-  const ToggleSwitch = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
-    <button
-      onClick={onChange}
-      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-        checked ? 'bg-blue-600' : 'bg-neutral-300'
-      }`}
-      role="switch"
-      aria-checked={checked}
-    >
-      <span
-        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-          checked ? 'translate-x-4' : 'translate-x-0.5'
-        }`}
-      />
-    </button>
-  );
 
   // Initialize visibility when sources change
   React.useEffect(() => {
@@ -128,36 +125,32 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     }));
   };
 
-  React.useEffect(() => {
-    setShowAccessZones(true);
-  }, []);
-
   return (
     <div className="w-full h-screen relative">
       {/* Legend / Key */}
       {sources && sources.length > 0 && (
-        <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-[320px] max-h-[700px] overflow-y-auto">
+        <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-[280px] max-h-[700px] overflow-y-auto">
           {/* Header */}
-          <div className="sticky top-0 bg-white/95 border-b border-neutral-200 px-4 py-3">
-            <h2 className="text-base font-bold text-neutral-900">Site Finder</h2>
-            <p className="text-xs text-neutral-500 mt-1">Find land suitable for new disc golf courses</p>
+          <div className="sticky top-0 bg-white/95 border-b border-neutral-200 px-3 py-2.5">
+            <h2 className="text-sm font-bold text-neutral-900">Site Finder</h2>
+            <p className="text-[11px] text-neutral-500 mt-1">Find land for new disc golf courses</p>
           </div>
 
-          <div className="px-4 py-4 space-y-6">
+          <div className="px-3 py-3 space-y-5">
             {/* SECTION 1: CANDIDATE SITES */}
             <div>
-              <div className="mb-3">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-600 mb-3">Candidate Sites</h3>
-                <p className="text-xs text-neutral-600 mb-3 leading-relaxed">
-                  Sites are ranked by <strong>population within 20 minutes</strong> by car, bike, or foot.
+              <div className="mb-2">
+                <h3 className="text-[11px] font-bold uppercase tracking-widest text-neutral-600 mb-1.5">Candidate Sites</h3>
+                <p className="text-[11px] text-neutral-600 mb-2 leading-relaxed">
+                  Ranked by <strong>population within 20 minutes</strong>.
                 </p>
               </div>
 
               {/* Priority Ranking Toggle */}
-              <div className="mb-4">
-                <div className="text-xs font-semibold text-neutral-700 mb-1.5">Priority Ranking</div>
-                <p className="text-[11px] text-neutral-500 mb-3">Toggle each priority level on/off to show or hide sites from the map.</p>
-                <div className="space-y-1.5">
+              <div className="mb-3">
+                <div className="text-[11px] font-semibold text-neutral-700 mb-1">Priority Ranking</div>
+                <p className="text-[10px] text-neutral-500 mb-2">Toggle on/off to show or hide sites.</p>
+                <div className="space-y-1">
                   {[
                     { rank: 5, label: 'Highest Priority', color: '#4a1486', desc: '1.19–1.62M people' },
                     { rank: 4, label: 'High Priority', color: '#6a51a3', desc: '616K–1.19M people' },
