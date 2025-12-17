@@ -41,8 +41,8 @@ export const mapRegistry: Record<string, MapDefinition> = {
     geoJsonData: melbourneMetroData,
     enable3d: true
   },
-  'disc-golf-course-sieve': {
-    id: 'disc-golf-course-sieve',
+  'disc-golf-site-finder': {
+    id: 'disc-golf-site-finder',
     title: 'Disc Golf Site Finder',
     description: 'Find the most accessible public land for new disc golf courses in Melbourne. Rank candidates by population reach, filter by size, and view existing course coverage.',
     methodology: `# What You're Looking At
@@ -137,7 +137,7 @@ Next.js, React, Mapbox GL JS, Python (GeoPandas)
 ✓ Land suitability depends on many factors beyond this analysis (terrain, access, regulations)  
 ✓ Always verify site details and permissions before planning
 
-**Questions or feedback?** This tool is built to help the disc golf community identify opportunities. If you spot issues or have suggestions, we'd love to hear from you.
+**Questions or feedback?** This tool is built to help the disc golf community identify opportunities. Contact: [maps@jonathonmarsden.com](mailto:maps@jonathonmarsden.com)
 `,
     initialViewState: {
       longitude: 145.0,
