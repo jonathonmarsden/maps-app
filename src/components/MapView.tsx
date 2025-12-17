@@ -41,6 +41,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   // State to track visibility of each source
   const [visibility, setVisibility] = React.useState<Record<string, boolean>>({});
   const [rankVisibility, setRankVisibility] = React.useState<Record<number, boolean>>({});
+  const [minAreaHa, setMinAreaHa] = React.useState<number>(2); // Minimum area in hectares
 
   // Initialize visibility when sources change
   React.useEffect(() => {
@@ -115,6 +116,23 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                         </div>
                       );
                     })}
+
+                    {/* Min Area control */}
+                    <div className="pt-2">
+                      <div className="text-[11px] uppercase tracking-wide text-neutral-500 mb-1">Min Area</div>
+                      <div className="flex gap-1">
+                        {[2,3,4,5].map((ha) => (
+                          <button
+                            key={ha}
+                            onClick={(e) => { e.stopPropagation(); setMinAreaHa(ha); }}
+                            className={`px-2 py-1 rounded text-xs border transition-colors ${minAreaHa===ha ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50'}`}
+                            title={`Show candidates with area ≥ ${ha} ha`}
+                          >
+                            {ha} ha+
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -183,7 +201,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
               let isVisible = visibility[source.id];
               
               // For rank-based filtering (candidates layer)
-              if (isVisible && layer.id === 'candidates-fill') {
+              if (isVisible && (layer.id === 'candidates-fill' || layer.id === 'candidates-label')) {
                 // Dynamically update the filter based on rank visibility
                 const activeRanks = Object.entries(rankVisibility)
                   .filter(([_, visible]) => visible)
@@ -191,9 +209,15 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                 
                 if (activeRanks.length === 0) {
                   isVisible = false;
-                } else if (activeRanks.length < 5) {
-                  // Create a filter for active ranks only
-                  const filter = ['in', ['get', 'rank'], ['literal', activeRanks]];
+                } else {
+                  // Base area filter (area_sqm ≥ minAreaHa * 10,000)
+                  const areaFilter: any = ['>=', ['get', 'area_sqm'], ['*', 10000, minAreaHa]];
+                  let filter: any = areaFilter;
+                  if (activeRanks.length < 5) {
+                    // Filter for active ranks only in addition to area
+                    const rankFilter: any = ['in', ['get', 'rank'], ['literal', activeRanks]];
+                    filter = ['all', areaFilter, rankFilter];
+                  }
                   return (
                     <Layer 
                       key={layer.id} 
