@@ -1,39 +1,52 @@
-# The Atlas (Maps App)
+# Maps App - The Atlas
 
-This is the dedicated Maps application for `maps.jonathonmarsden.com`.
-It is built with Next.js and Mapbox (`react-map-gl`).
+This is the geospatial visualization engine for the `jonathonmarsden.com` ecosystem. It lives at `maps.jonathonmarsden.com`.
 
-## 🚀 Getting Started
+## Overview
 
-### 1. Mapbox Token
-You need a Mapbox Access Token to render the maps.
-1.  Go to [Mapbox.com](https://mapbox.com) and sign up/login.
-2.  Create a public access token.
-3.  Create a file named `.env.local` in this folder:
-    ```bash
-    NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoiam9uYXRob25tYXJzZGVuIi...
+The Maps App is a Next.js application designed to render high-fidelity, interactive maps using Mapbox GL JS. It uses a "Registry" pattern to easily add new map visualizations without duplicating code.
+
+## Features
+
+*   **Mapbox Integration:** Uses `react-map-gl` for React-friendly Mapbox bindings.
+*   **3D Capabilities:** Supports 3D terrain and building extrusions.
+*   **Registry System:** Centralized configuration in `src/data/registry.ts`.
+*   **Static Generation:** Uses `generateStaticParams` to pre-render map pages for performance.
+*   **Neon Styling:** Custom "Cyberpunk/Neon" data visualization styles.
+
+## Adding a New Map
+
+1.  **Prepare Data:** Create a GeoJSON file or TypeScript object (e.g., `src/data/my-new-map.ts`).
+2.  **Register Map:** Open `src/data/registry.ts` and add a new entry to `mapRegistry`:
+    ```typescript
+    'my-new-map': {
+      id: 'my-new-map',
+      title: 'My New Map',
+      description: 'Description here.',
+      initialViewState: { ... },
+      geoJsonData: myData,
+      enable3d: true // Optional
+    }
+    ```
+3.  **Deploy:** Push to `main`. The new route `/my-new-map` will be automatically generated.
+
+## Development
+
+1.  **Environment Variables:**
+    Create a `.env.local` file with your Mapbox token:
+    ```
+    NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1...
     ```
 
-### 2. Run Locally
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000).
+2.  **Run Server:**
+    ```bash
+    npm run dev
+    ```
 
-## 📦 Deployment
+3.  **Visit:** [http://localhost:3000/melbourne-metro](http://localhost:3000/melbourne-metro)
 
-### 1. GitHub
-Create a new repository for this folder (e.g., `jonathonmarsden/maps-app`).
-```bash
-gh repo create maps-app --public --source=. --remote=origin --push
-```
+## Deployment
 
-### 2. Vercel
-1.  Import the `maps-app` repository into Vercel.
-2.  **Important:** Add the `NEXT_PUBLIC_MAPBOX_TOKEN` environment variable in the Vercel Project Settings.
-3.  Add the domain `maps.jonathonmarsden.com`.
-
-### 3. DNS
-In Cloudflare, add a CNAME record:
-- **Name:** `maps`
-- **Target:** `cname.vercel-dns.com`
+Deployed on **Vercel**.
+*   **Project:** `maps-app`
+*   **Domain:** `maps.jonathonmarsden.com`
