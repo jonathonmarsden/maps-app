@@ -19,6 +19,8 @@ interface MapViewProps {
   title?: string;
   sources?: {
     id: string;
+    label?: string;
+    color?: string;
     type: 'geojson';
     data: string | any;
     layers: any[];
@@ -32,8 +34,58 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     zoom: 10
   };
 
+  // State to track visibility of each source
+  const [visibility, setVisibility] = React.useState<Record<string, boolean>>({});
+
+  // Initialize visibility when sources change
+  React.useEffect(() => {
+    if (sources) {
+      const initialVisibility: Record<string, boolean> = {};
+      sources.forEach(s => {
+        initialVisibility[s.id] = true;
+      });
+      setVisibility(initialVisibility);
+    }
+  }, [sources]);
+
+  const toggleVisibility = (id: string) => {
+    setVisibility(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen relative">
+      {/* Legend / Key */}
+      {sources && sources.length > 0 && (
+        <div className="absolute bottom-8 right-4 z-10 bg-black/80 text-white p-4 rounded-lg backdrop-blur-sm border border-neutral-800 shadow-xl min-w-[200px]">
+          <h3 className="text-sm font-bold mb-3 uppercase tracking-wider text-neutral-400">Map Layers</h3>
+          <div className="space-y-2">
+            {sources.map((source) => (
+              <div 
+                key={source.id} 
+                className="flex items-center justify-between cursor-pointer hover:bg-white/5 p-1 rounded transition-colors"
+                onClick={() => toggleVisibility(source.id)}
+              >
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full shadow-sm" 
+                    style={{ backgroundColor: source.color || '#ccc' }}
+                  />
+                  <span className={`text-sm ${!visibility[source.id] ? 'text-neutral-500 line-through' : 'text-neutral-200'}`}>
+                    {source.label || source.id}
+                  </span>
+                </div>
+                <div className={`w-8 h-4 rounded-full relative transition-colors ${visibility[source.id] ? 'bg-blue-600' : 'bg-neutral-600'}`}>
+                  <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${visibility[source.id] ? 'left-4.5' : 'left-0.5'}`} style={{ left: visibility[source.id] ? '18px' : '2px' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <Map
         initialViewState={initialViewState || defaultViewState}
         style={{ width: '100%', height: '100%' }}
@@ -90,7 +142,14 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
         {sources?.map((source) => (
           <Source key={source.id} id={source.id} type={source.type} data={source.data}>
             {source.layers.map((layer) => (
-              <Layer key={layer.id} {...layer} />
+              <Layer 
+                key={layer.id} 
+                {...layer} 
+                layout={{
+                  ...layer.layout,
+                  visibility: visibility[source.id] ? 'visible' : 'none'
+                }}
+              />
             ))}
           </Source>
         ))}

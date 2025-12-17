@@ -16,6 +16,8 @@ export interface MapDefinition {
   enable3d?: boolean;
   sources?: {
     id: string;
+    label?: string; // For the legend
+    color?: string; // For the legend icon
     type: 'geojson'; // Currently only supporting geojson
     data: string | any;
     layers: any[];
@@ -49,6 +51,8 @@ export const mapRegistry: Record<string, MapDefinition> = {
     sources: [
       {
         id: 'exclusion-zones',
+        label: 'Exclusion Zones (2.4km Buffer)',
+        color: '#ff3333',
         type: 'geojson',
         data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
         layers: [
@@ -57,7 +61,7 @@ export const mapRegistry: Record<string, MapDefinition> = {
             type: 'fill',
             paint: {
               'fill-color': '#ff3333',
-              'fill-opacity': 0.2,
+              'fill-opacity': 0.1,
               'fill-outline-color': '#ff3333'
             }
           }
@@ -65,6 +69,8 @@ export const mapRegistry: Record<string, MapDefinition> = {
       },
       {
         id: 'candidates',
+        label: 'Candidate Locations',
+        color: '#ccff00',
         type: 'geojson',
         data: '/data/disc-golf/candidates_optimization_needed.geojson',
         layers: [
@@ -73,14 +79,24 @@ export const mapRegistry: Record<string, MapDefinition> = {
             type: 'fill',
             paint: {
               'fill-color': '#ccff00',
-              'fill-opacity': 0.4,
-              'fill-outline-color': '#ccff00'
+              'fill-opacity': 0.15, // More transparent to see labels
+            }
+          },
+          {
+            id: 'candidates-outline',
+            type: 'line',
+            paint: {
+              'line-color': '#ccff00',
+              'line-width': 1,
+              'line-opacity': 0.8
             }
           }
         ]
       },
       {
         id: 'existing-courses',
+        label: 'Existing Courses',
+        color: '#00ffff',
         type: 'geojson',
         data: '/data/disc-golf/existing_courses.geojson',
         layers: [
@@ -88,7 +104,7 @@ export const mapRegistry: Record<string, MapDefinition> = {
             id: 'existing-circles',
             type: 'circle',
             paint: {
-              'circle-radius': 8,
+              'circle-radius': 6,
               'circle-color': '#00ffff',
               'circle-stroke-width': 2,
               'circle-stroke-color': '#ffffff'
@@ -100,7 +116,7 @@ export const mapRegistry: Record<string, MapDefinition> = {
             layout: {
               'text-field': ['get', 'name'],
               'text-offset': [0, 1.5],
-              'text-size': 12,
+              'text-size': 11,
               'text-variable-anchor': ['top', 'bottom', 'left', 'right']
             },
             paint: {
