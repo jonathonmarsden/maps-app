@@ -128,13 +128,3 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     </div>
   );
 }
-                'line-color': '#60a5fa',
-                'line-width': 2
-              }}
-            />
-          </Source>
-        )}
-      </Map>
-    </div>
-  );
-}
