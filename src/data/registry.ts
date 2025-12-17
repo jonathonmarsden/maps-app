@@ -43,28 +43,63 @@ export const mapRegistry: Record<string, MapDefinition> = {
   },
   'disc-golf-course-sieve': {
     id: 'disc-golf-course-sieve',
-    title: 'Disc Golf Course Sieve',
-    description: 'Identifying the most suitable public land for new disc golf courses in Melbourne based on accessibility and land suitability.',
-    methodology: `**Methodology: The Sieve Process**
+    title: 'Disc Golf Site Finder',
+    description: 'Find the most accessible public land for new disc golf courses in Melbourne. Rank candidates by population reach, filter by size, and view existing course coverage.',
+    methodology: `# Finding New Disc Golf Sites
 
-The goal of this tool is to identify underutilized public land that is highly accessible to the community.
+## How This Tool Works
 
-**1. Candidate Extraction**
-*   **Source:** Vicmap Property (Crown Land) & OSM Parks.
-*   **Filters:** 
-    *   Must be Crown Land / Public Open Space.
-    *   Minimum Area: 2 Hectares (sufficient for 9 holes).
-    *   **Exclusions:** Schools, Sports Ovals, Airports, Golf Courses, and Cemeteries are removed.
+This interactive map identifies public land in Melbourne that is suitable for new disc golf courses. It combines geographic data (where public land exists), population data (who can reach it), and accessibility analysis (how people can get there).
 
-**2. Accessibility Scoring (The "20-Minute City")**
-*   For each candidate site we estimate population reach within a 20-minute catchment and score it.
-*   Exclusion zones show 20-minute isochrones around existing courses for three transport modes:
-  *   **Drive, Cycle, Walk:** computed via OpenRouteService isochrones (v2, profiles: driving-car, cycling-regular, foot-walking).
-*   Population (ABS 2024 ERP) inside the 20-min catchment informs the suitability rank (1–5).
+## 1. Candidate Sites
 
-**3. Ranking System**
-*   **Rank 5 (Purple):** Top 20% of sites (Highest population reach).
-*   **Rank 1 (Yellow):** Bottom 20% of sites.
+**What we searched for:**
+- Crown Land and public parks across the greater Melbourne area
+- Sites of at least 2 hectares (enough space for 9 holes)
+- Excluding existing golf courses, schools, sports ovals, airports, and cemeteries
+
+**Data sources:**
+- **Vicmap Property:** Victorian government land registry (Crown Land boundaries)
+- **OpenStreetMap:** Community-contributed parks and public spaces
+
+## 2. Priority Ranking
+
+**How ranking works:**
+Each candidate is scored based on how many people can reach it within 20 minutes using typical transport methods (driving, cycling, or walking).
+
+- **Highest Priority (Purple):** 1.19–1.62 million people within reach
+- **High Priority (Dark Purple):** 616K–1.19 million people
+- **Medium Priority (Light Purple):** 158K–616K people
+- **Lower Priority (Pale Purple):** 28K–158K people
+- **Lowest Priority (Very Pale Purple):** 5–28K people
+
+**Data source:**
+- **ABS ERP 2024:** Australian Bureau of Statistics Estimated Resident Population (2024)
+
+## 3. Accessibility by Transport Mode
+
+**Reach zones show 20-minute travel distance by:**
+- **Car:** Major routes; assumes normal traffic conditions
+- **Bike:** Cycling distance on streets; assumes moderate fitness
+- **Walk:** Pedestrian distance; assumes safe, connected paths
+
+**Data source:**
+- **OpenRouteService:** Open-source routing engine using OpenStreetMap road network
+
+## 4. Size Filter
+
+You can filter by minimum site area (2–5 hectares) to explore different course footprints.
+
+## Technical Stack
+
+- **Frontend:** Next.js 16, React 19, Mapbox GL JS
+- **Data Processing:** Python (GeoPandas, Shapely)
+- **Map Tiles:** Mapbox Outdoors style
+- **Routing:** OpenRouteService (ORS) v2
+
+## Data Quality Note
+
+This analysis is based on publicly available data current as of December 2025. Population estimates are modeled; actual accessibility varies by season, time of day, and route quality. Use this as a starting point for site evaluation, not as a final decision tool.
 `,
     initialViewState: {
       longitude: 145.0,

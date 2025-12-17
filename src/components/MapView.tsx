@@ -44,7 +44,25 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   const [minAreaHa, setMinAreaHa] = React.useState<number>(4); // Default to 4 ha for public view
   const [candidateFeatures, setCandidateFeatures] = React.useState<any[]>([]);
   const [candidateCount, setCandidateCount] = React.useState<number>(0);
-  const [showAccessZones, setShowAccessZones] = React.useState<boolean>(false);
+  const [showAccessZones, setShowAccessZones] = React.useState<boolean>(true);
+  
+  // Toggle switch component for reuse
+  const ToggleSwitch = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
+    <button
+      onClick={onChange}
+      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+        checked ? 'bg-blue-600' : 'bg-neutral-300'
+      }`}
+      role="switch"
+      aria-checked={checked}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+          checked ? 'translate-x-4' : 'translate-x-0.5'
+        }`}
+      />
+    </button>
+  );
 
   // Initialize visibility when sources change
   React.useEffect(() => {
@@ -109,6 +127,10 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
       [rank]: !prev[rank]
     }));
   };
+
+  React.useEffect(() => {
+    setShowAccessZones(true);
+  }, []);
 
   return (
     <div className="w-full h-screen relative">
