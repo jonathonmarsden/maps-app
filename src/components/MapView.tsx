@@ -81,7 +81,6 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
           <h3 className="text-sm font-bold mb-3 uppercase tracking-wider text-neutral-600">Map Layers</h3>
           <div className="space-y-3">
             {sources
-              .filter(source => source.id !== 'exclusions') // Hide exclusions from legend
               .map((source) => (
               <div key={source.id}>
                 <div 

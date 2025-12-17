@@ -57,9 +57,11 @@ The goal of this tool is to identify underutilized public land that is highly ac
     *   **Exclusions:** Schools, Sports Ovals, Airports, Golf Courses, and Cemeteries are removed.
 
 **2. Accessibility Scoring (The "20-Minute City")**
-*   We calculate a 20-minute walking/cycling isochrone for every candidate site.
-*   We sum the ABS Population (2024 ERP) living within that catchment.
-*   Sites are ranked 1 (Low) to 5 (High) based on the population served.
+*   For each candidate site we estimate population reach within a 20-minute catchment and score it.
+*   Exclusion zones show 20-minute isochrones around existing courses for multiple modes:
+  *   **Drive, Cycle, Walk:** computed via OpenRouteService isochrones (v2, profiles: driving-car, cycling-regular, foot-walking).
+  *   **Public Transport:** planned via OpenTripPlanner (GTFS) isochrones; not yet shown in this beta.
+*   Population (ABS 2024 ERP) inside the 20-min catchment informs the suitability rank (1–5).
 
 **3. Ranking System**
 *   **Rank 5 (Purple):** Top 20% of sites (Highest population reach).
@@ -72,23 +74,54 @@ The goal of this tool is to identify underutilized public land that is highly ac
     },
     sources: [
       // Render exclusions first so all labels sit above them
-      {
-        id: 'exclusions',
-        label: 'Exclusion Zones (20-min drive)',
-        type: 'geojson',
-        data: '/data/disc-golf/exclusion_zones_drive_20min.geojson',
-        color: '#cc0000',
-        layers: [
-          {
-            id: 'exclusions-fill',
-            type: 'fill',
-            paint: {
-              'fill-color': '#cc0000',
-              'fill-opacity': 0.35
+        {
+          id: 'exclusions-drive',
+          label: 'Exclusions: 20-min Drive',
+          type: 'geojson',
+          data: '/data/disc-golf/exclusion_zones_drive_20min.geojson',
+          layers: [
+            {
+              id: 'exclusions-drive-fill',
+              type: 'fill',
+              paint: {
+                'fill-color': '#cc0000',
+                'fill-opacity': 0.30
+              }
             }
-          }
-        ]
-      },
+          ]
+        },
+        {
+          id: 'exclusions-cycle',
+          label: 'Exclusions: 20-min Cycle',
+          type: 'geojson',
+          data: '/data/disc-golf/exclusion_zones_cycle_20min.geojson',
+          layers: [
+            {
+              id: 'exclusions-cycle-fill',
+              type: 'fill',
+              paint: {
+                'fill-color': '#1e88e5',
+                'fill-opacity': 0.22
+              }
+            }
+          ]
+        },
+        {
+          id: 'exclusions-walk',
+          label: 'Exclusions: 20-min Walk',
+          type: 'geojson',
+          data: '/data/disc-golf/exclusion_zones_walk_20min.geojson',
+          layers: [
+            {
+              id: 'exclusions-walk-fill',
+              type: 'fill',
+              paint: {
+                'fill-color': '#2e7d32',
+                'fill-opacity': 0.18
+              }
+            }
+          ]
+        },
       {
         id: 'candidates',
         label: 'Candidate Sites (Ranked)',

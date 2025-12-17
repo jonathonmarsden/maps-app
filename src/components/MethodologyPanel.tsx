@@ -14,11 +14,12 @@ export default function MethodologyPanel({ title, description, methodology }: Me
   return (
     <>
       {/* Title and Methodology Panel */}
-      <div className="absolute top-4 left-4 z-20 bg-black/80 text-white rounded-lg backdrop-blur-sm overflow-hidden shadow-lg">
+      <div className="absolute top-4 left-4 z-20 bg-black/85 text-white rounded-md backdrop-blur-sm overflow-hidden shadow-lg w-[380px]">
         {/* Title Section */}
         <div className="p-3 border-b border-white/10">
           <h1 className="text-xl font-bold mb-1 leading-tight">{title}</h1>
           <p className="text-sm text-gray-300 mb-2 leading-snug">{description}</p>
+          <p className="text-xs text-gray-300 mb-2 leading-snug">Toggle transport modes and suitability ranks in the legend.</p>
           
           {/* Methodology Button */}
           {methodology && (
@@ -33,7 +34,7 @@ export default function MethodologyPanel({ title, description, methodology }: Me
 
         {/* Expandable Methodology Section */}
         {showMethodology && methodology && (
-          <div className="px-3 py-2 bg-black/50 border-t border-white/10 max-w-md max-h-[380px] overflow-y-auto">
+          <div className="px-3 py-2 bg-black/50 border-t border-white/10 max-w-md max-h-[360px] overflow-y-auto">
             <div className="prose prose-sm prose-invert max-w-none text-gray-100">
               <ReactMarkdown>{methodology}</ReactMarkdown>
             </div>
