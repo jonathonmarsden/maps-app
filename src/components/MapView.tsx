@@ -34,6 +34,7 @@ interface MapViewProps {
   geoJsonData?: any;
   enable3d?: boolean;
   title?: string;
+  description?: string;
   sources?: {
     id: string;
     label?: string;
@@ -47,7 +48,7 @@ interface MapViewProps {
   onMethodologyOpen?: () => void; // Callback when methodology should be shown
 }
 
-export default function MapView({ initialViewState, geoJsonData, enable3d, title, sources, methodology, onMethodologyOpen }: MapViewProps) {
+export default function MapView({ initialViewState, geoJsonData, enable3d, title, description, sources, methodology, onMethodologyOpen }: MapViewProps) {
   const defaultViewState = {
     longitude: 144.9631, // Melbourne
     latitude: -37.8136,
@@ -129,28 +130,36 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     <div className="w-full h-screen relative">
       {/* Legend / Key */}
       {sources && sources.length > 0 && (
-        <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-[280px] max-h-[700px] overflow-y-auto">
-          {/* Header */}
-          <div className="sticky top-0 bg-white/95 border-b border-neutral-200 px-3 py-2.5">
-            <h2 className="text-sm font-bold text-neutral-900">Site Finder</h2>
-            <p className="text-[11px] text-neutral-500 mt-1">Find land for new disc golf courses</p>
+        <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-[187px] max-w-[187px] max-h-[85vh] overflow-y-auto">
+          {/* Title Section */}
+          <div className="sticky top-0 bg-gradient-to-b from-white to-neutral-50 border-b border-neutral-200 px-3 py-3">
+            <h2 className="text-sm font-bold text-neutral-900 mb-1.5 leading-tight">{title}</h2>
+            <p className="text-[10px] text-neutral-600 mb-2 leading-snug">{description}</p>
+            {methodology && onMethodologyOpen && (
+              <button
+                onClick={onMethodologyOpen}
+                className="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded transition-colors font-medium w-full"
+              >
+                How It Works
+              </button>
+            )}
           </div>
 
-          <div className="px-3 py-3 space-y-5">
+          <div className="px-2.5 py-2.5 space-y-4">
             {/* SECTION 1: CANDIDATE SITES */}
             <div>
-              <div className="mb-2">
-                <h3 className="text-[11px] font-bold uppercase tracking-widest text-neutral-600 mb-1.5">Candidate Sites</h3>
-                <p className="text-[11px] text-neutral-600 mb-2 leading-relaxed">
-                  Ranked by <strong>population within 20 minutes</strong>.
+              <div className="mb-1.5">
+                <h3 className="text-[9px] font-bold uppercase tracking-wider text-neutral-600 mb-1">Candidate Sites</h3>
+                <p className="text-[9px] text-neutral-600 mb-1.5 leading-snug">
+                  Ranked by <strong>pop. reach</strong>.
                 </p>
               </div>
 
               {/* Priority Ranking Toggle */}
-              <div className="mb-3">
-                <div className="text-[11px] font-semibold text-neutral-700 mb-1">Priority Ranking</div>
-                <p className="text-[10px] text-neutral-500 mb-2">Toggle on/off to show or hide sites.</p>
-                <div className="space-y-1">
+              <div className="mb-2.5">
+                <div className="text-[9px] font-semibold text-neutral-700 mb-0.5">Priority Ranking</div>
+                <p className="text-[8px] text-neutral-500 mb-1.5">Toggle on/off</p>
+                <div className="space-y-0.5">
                   {[
                     { rank: 5, label: 'Highest Priority', color: '#4a1486', desc: '1.19–1.62M people' },
                     { rank: 4, label: 'High Priority', color: '#6a51a3', desc: '616K–1.19M people' },
@@ -160,19 +169,19 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                   ].map(({ rank, label, color, desc }) => (
                     <div
                       key={rank}
-                      className="flex items-center gap-3 p-2 rounded hover:bg-neutral-50 transition-colors"
+                      className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
                     >
                       <div
-                        className="w-4 h-4 rounded-sm flex-shrink-0"
+                        className="w-3 h-3 rounded-sm flex-shrink-0"
                         style={{
                           backgroundColor: color,
                           opacity: rankVisibility[rank] ? 1 : 0.3,
-                          border: `2px solid ${color}`
+                          border: `1px solid ${color}`
                         }}
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-neutral-900">{label}</div>
-                        <div className="text-[11px] text-neutral-500">{desc}</div>
+                        <div className="text-[9px] font-medium text-neutral-900 leading-tight">{label}</div>
+                        <div className="text-[8px] text-neutral-500 leading-tight">{desc}</div>
                       </div>
                       <ToggleSwitch
                         checked={rankVisibility[rank]}
@@ -184,29 +193,29 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
               </div>
 
               {/* Minimum Size Filter */}
-              <div className="border-t border-neutral-200 pt-4">
-                <div className="text-xs font-semibold text-neutral-700 mb-2.5">Minimum Size</div>
-                <div className="flex items-center gap-2 flex-wrap mb-3">
+              <div className="border-t border-neutral-200 pt-2.5">
+                <div className="text-[9px] font-semibold text-neutral-700 mb-1.5">Min Size</div>
+                <div className="flex items-center gap-1 flex-wrap mb-2">
                   {[2, 3, 4, 5].map((ha) => (
                     <button
                       key={ha}
                       onClick={() => setMinAreaHa(ha)}
-                      className={`px-3 py-1.5 rounded text-xs font-medium border-2 transition-all ${
+                      className={`px-2 py-1 rounded text-[9px] font-medium border transition-all ${
                         minAreaHa === ha
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                          : 'bg-white text-neutral-700 border-neutral-300 hover:border-blue-400 hover:bg-blue-50'
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white text-neutral-700 border-neutral-300 hover:border-blue-400'
                       }`}
                       title={`Show sites with area ≥ ${ha} hectares`}
                     >
-                      {ha} ha
+                      {ha}ha
                     </button>
                   ))}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-neutral-600">
-                    <span className="font-semibold text-neutral-900">{candidateCount.toLocaleString()}</span> sites match
+                  <span className="text-[9px] text-neutral-600">
+                    <span className="font-semibold text-neutral-900">{candidateCount.toLocaleString()}</span> sites
                   </span>
-                  <span className="text-[11px] text-neutral-500">
+                  <span className="text-[8px] text-neutral-500">
                     ({((candidateCount / (candidateFeatures.length || 1)) * 100).toFixed(0)}%)
                   </span>
                 </div>
@@ -214,23 +223,23 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
             </div>
 
             {/* SECTION 2: CURRENT COURSES & ACCESS ZONES */}
-            <div className="border-t border-neutral-200 pt-4">
-              <div className="mb-3">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-600 mb-1.5">
-                  Existing Courses & Reach
+            <div className="border-t border-neutral-200 pt-2.5">
+              <div className="mb-2">
+                <h3 className="text-[9px] font-bold uppercase tracking-wider text-neutral-600 mb-1">
+                  Existing & Reach
                 </h3>
-                <p className="text-[11px] text-neutral-600 leading-relaxed">
-                  Toggle each layer on/off to view existing courses and their 20-minute accessible areas.
+                <p className="text-[8px] text-neutral-600 leading-snug">
+                  Toggle layers on/off
                 </p>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                   {/* Existing Courses */}
-                  <div className="flex items-center gap-3 p-2.5 rounded hover:bg-neutral-50 transition-colors">
-                    <div className="w-5 h-5 rounded-full bg-red-600 border-2 border-red-700 flex-shrink-0" />
+                  <div className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors">
+                    <div className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-700 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-medium text-neutral-900">Existing Courses</div>
-                      <div className="text-[11px] text-neutral-500">12 active locations</div>
+                      <div className="text-[9px] font-medium text-neutral-900 leading-tight">Existing</div>
+                      <div className="text-[8px] text-neutral-500 leading-tight">12 active</div>
                     </div>
                     <ToggleSwitch
                       checked={visibility['existing-courses']}
@@ -240,24 +249,24 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
 
                   {/* Access Zones */}
                   {[
-                    { id: 'exclusions-drive', label: 'by Car', color: '#cc0000', desc: '20-min drive' },
-                    { id: 'exclusions-cycle', label: 'by Bike', color: '#1e88e5', desc: '20-min cycle' },
-                    { id: 'exclusions-walk', label: 'on Foot', color: '#2e7d32', desc: '20-min walk' },
+                    { id: 'exclusions-drive', label: 'Car', color: '#cc0000', desc: '20min' },
+                    { id: 'exclusions-cycle', label: 'Bike', color: '#1e88e5', desc: '20min' },
+                    { id: 'exclusions-walk', label: 'Walk', color: '#2e7d32', desc: '20min' },
                   ].map(({ id, label, color, desc }) => (
                     <div
                       key={id}
-                      className="flex items-center gap-3 p-2.5 rounded hover:bg-neutral-50 transition-colors"
+                      className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
                     >
                       <div
-                        className="w-5 h-5 rounded flex-shrink-0"
+                        className="w-3.5 h-3.5 rounded flex-shrink-0"
                         style={{
                           backgroundColor: color,
                           opacity: visibility[id] ? 0.4 : 0.15
                         }}
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-neutral-900">{label}</div>
-                        <div className="text-[11px] text-neutral-500">{desc}</div>
+                        <div className="text-[9px] font-medium text-neutral-900 leading-tight">{label}</div>
+                        <div className="text-[8px] text-neutral-500 leading-tight">{desc}</div>
                       </div>
                       <ToggleSwitch
                         checked={visibility[id]}

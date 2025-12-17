@@ -3,6 +3,7 @@ import MapView from '@/components/MapView';
 import { notFound } from 'next/navigation';
 import MethodologyPanel from '@/components/MethodologyPanel';
 import type { Metadata } from 'next';
+import MapPageClient from './MapPageClient';
 
 export async function generateStaticParams() {
   const maps = getAllMaps();
@@ -36,23 +37,5 @@ export default async function MapPage({ params }: { params: Promise<{ slug: stri
     notFound();
   }
 
-  return (
-    <div className="relative w-full h-screen">
-      {/* Overlay Title with Methodology */}
-      <MethodologyPanel 
-        title={mapData.title}
-        description={mapData.description}
-        methodology={mapData.methodology}
-      />
-
-      <MapView 
-        initialViewState={mapData.initialViewState} 
-        geoJsonData={mapData.geoJsonData}
-        enable3d={mapData.enable3d}
-        title={mapData.title}
-        sources={mapData.sources}
-        methodology={mapData.methodology}
-      />
-    </div>
-  );
+  return <MapPageClient mapData={mapData} />;
 }
