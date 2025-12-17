@@ -74,9 +74,9 @@ The goal of this tool is to identify underutilized public land that is highly ac
       // Render exclusions first so all labels sit above them
       {
         id: 'exclusions',
-        label: 'Exclusion Zones',
+        label: 'Exclusion Zones (20-min drive)',
         type: 'geojson',
-        data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
+        data: '/data/disc-golf/exclusion_zones_drive_20min.geojson',
         color: '#cc0000',
         layers: [
           {
