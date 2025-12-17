@@ -166,20 +166,24 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                   ].map(({ rank, label, color, desc }) => (
                     <div
                       key={rank}
-                      className="flex items-center gap-2.5 p-2 rounded hover:bg-neutral-50 cursor-pointer transition-colors"
-                      onClick={() => toggleRankVisibility(rank)}
+                      className="flex items-center gap-3 p-2 rounded hover:bg-neutral-50 transition-colors"
                     >
                       <div
-                        className="w-5 h-5 rounded-sm border border-neutral-300"
+                        className="w-4 h-4 rounded-sm flex-shrink-0"
                         style={{
-                          backgroundColor: rankVisibility[rank] ? color : '#f3f4f6',
-                          borderColor: rankVisibility[rank] ? color : '#d1d5db'
+                          backgroundColor: color,
+                          opacity: rankVisibility[rank] ? 1 : 0.3,
+                          border: `2px solid ${color}`
                         }}
                       />
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-medium text-neutral-900">{label}</div>
                         <div className="text-[11px] text-neutral-500">{desc}</div>
                       </div>
+                      <ToggleSwitch
+                        checked={rankVisibility[rank]}
+                        onChange={() => toggleRankVisibility(rank)}
+                      />
                     </div>
                   ))}
                 </div>
@@ -242,20 +246,15 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
               {showAccessZones && (
                 <div className="space-y-2 ml-1">
                   {/* Existing Courses */}
-                  <div
-                    className="flex items-center gap-2.5 p-2 rounded hover:bg-neutral-50 cursor-pointer transition-colors"
-                    onClick={() => toggleVisibility('existing-courses')}
-                  >
-                    <div className="w-5 h-5 rounded-full bg-red-600 border-2 border-red-700" />
+                  <div className="flex items-center gap-3 p-2.5 rounded hover:bg-neutral-50 transition-colors">
+                    <div className="w-5 h-5 rounded-full bg-red-600 border-2 border-red-700 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-medium text-neutral-900">Existing Courses</div>
                       <div className="text-[11px] text-neutral-500">12 active locations</div>
                     </div>
-                    <input
-                      type="checkbox"
+                    <ToggleSwitch
                       checked={visibility['existing-courses']}
-                      onChange={() => {}}
-                      className="w-4 h-4"
+                      onChange={() => toggleVisibility('existing-courses')}
                     />
                   </div>
 
@@ -267,27 +266,26 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                   ].map(({ id, label, color, desc }) => (
                     <div
                       key={id}
-                      className="flex items-center gap-2.5 p-2 rounded hover:bg-neutral-50 cursor-pointer transition-colors"
-                      onClick={() => toggleVisibility(id)}
+                      className="flex items-center gap-3 p-2.5 rounded hover:bg-neutral-50 transition-colors"
                     >
                       <div
-                        className="w-5 h-5 rounded opacity-40"
-                        style={{ backgroundColor: color }}
+                        className="w-5 h-5 rounded flex-shrink-0"
+                        style={{
+                          backgroundColor: color,
+                          opacity: visibility[id] ? 0.4 : 0.15
+                        }}
                       />
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-medium text-neutral-900">{label}</div>
                         <div className="text-[11px] text-neutral-500">{desc}</div>
                       </div>
-                      <input
-                        type="checkbox"
+                      <ToggleSwitch
                         checked={visibility[id]}
-                        onChange={() => {}}
-                        className="w-4 h-4"
+                        onChange={() => toggleVisibility(id)}
                       />
                     </div>
                   ))}
                 </div>
-              )}
             </div>
           </div>
         </div>
