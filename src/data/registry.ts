@@ -63,7 +63,7 @@ We calculate travel time by car, bike, and on foot, then count how many resident
 ### The Rankings Explained
 
 | Priority Level | Population Reach | What This Means |
-|---------------|------------------|-----------------|
+|:---------------|:-----------------|:----------------|
 | **Highest Priority** (Deep Purple) | 1.19–1.62 million | Inner suburbs with excellent access |
 | **High Priority** (Dark Purple) | 616K–1.19 million | Well-connected urban areas |
 | **Medium Priority** (Purple) | 158K–616K | Suburban areas with good access |
