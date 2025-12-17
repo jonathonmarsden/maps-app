@@ -42,6 +42,7 @@ export default function MethodologyPanel({ title, description, methodology, isOp
               .prose ul { @apply text-sm text-neutral-700 mb-2 pl-4 space-y-1; }
               .prose li { @apply text-sm text-neutral-700; }
               .prose strong { @apply font-semibold text-neutral-900; }
+              .prose a { @apply text-blue-600 hover:text-blue-800 underline cursor-pointer; }
             `}</style>
             <ReactMarkdown>{methodology}</ReactMarkdown>
           </div>
