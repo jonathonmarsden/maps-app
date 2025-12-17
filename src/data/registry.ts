@@ -60,7 +60,7 @@ The goal of this tool is to identify underutilized public land that is highly ac
 *   For each candidate site we estimate population reach within a 20-minute catchment and score it.
 *   Exclusion zones show 20-minute isochrones around existing courses for multiple modes:
   *   **Drive, Cycle, Walk:** computed via OpenRouteService isochrones (v2, profiles: driving-car, cycling-regular, foot-walking).
-  *   **Public Transport:** planned via OpenTripPlanner (GTFS) isochrones; not yet shown in this beta.
+  *   **Public Transport:** computed via OpenTripPlanner (GTFS) isochrones (20-minute), now shown.
 *   Population (ABS 2024 ERP) inside the 20-min catchment informs the suitability rank (1–5).
 
 **3. Ranking System**
@@ -118,6 +118,22 @@ The goal of this tool is to identify underutilized public land that is highly ac
               paint: {
                 'fill-color': '#2e7d32',
                 'fill-opacity': 0.18
+              }
+            }
+          ]
+        },
+        {
+          id: 'exclusions-pt',
+          label: 'Exclusions: 20-min PT',
+          type: 'geojson',
+          data: '/data/disc-golf/exclusion_zones_pt_20min.geojson',
+          layers: [
+            {
+              id: 'exclusions-pt-fill',
+              type: 'fill',
+              paint: {
+                'fill-color': '#6d1b7b',
+                'fill-opacity': 0.20
               }
             }
           ]
