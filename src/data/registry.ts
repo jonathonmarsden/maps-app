@@ -45,61 +45,99 @@ export const mapRegistry: Record<string, MapDefinition> = {
     id: 'disc-golf-course-sieve',
     title: 'Disc Golf Site Finder',
     description: 'Find the most accessible public land for new disc golf courses in Melbourne. Rank candidates by population reach, filter by size, and view existing course coverage.',
-    methodology: `# Finding New Disc Golf Sites
+    methodology: `# What You're Looking At
 
-## How This Tool Works
+This map helps you discover the best locations for new disc golf courses in Melbourne. Every colored area you see is **real public land** that could work for a course. We've ranked each site based on how many people can easily reach it.
 
-This interactive map identifies public land in Melbourne that is suitable for new disc golf courses. It combines geographic data (where public land exists), population data (who can reach it), and accessibility analysis (how people can get there).
+---
 
-## 1. Candidate Sites
+## Understanding the Map
 
-**What we searched for:**
-- Crown Land and public parks across the greater Melbourne area
-- Sites of at least 2 hectares (enough space for 9 holes)
-- Excluding existing golf courses, schools, sports ovals, airports, and cemeteries
+### Purple Areas = Candidate Sites
+These are pieces of **Crown Land or public parks** that meet basic requirements:
+- At least 2 hectares (roughly 3 football fields)
+- Not already used for schools, sports, golf, or airports
+- Open space where a disc golf course could fit
 
-**Data sources:**
-- **Vicmap Property:** Victorian government land registry (Crown Land boundaries)
-- **OpenStreetMap:** Community-contributed parks and public spaces
+**The darker the purple, the more people can reach it within 20 minutes.**
 
-## 2. Priority Ranking
+### Red Circles = Existing Courses
+These are the 12 disc golf courses currently operating in Melbourne. The colored zones around them show how far people can travel to reach them in 20 minutes by different transport modes.
 
-**How ranking works:**
-Each candidate is scored based on how many people can reach it within 20 minutes using typical transport methods (driving, cycling, or walking).
+---
 
-- **Highest Priority (Purple):** 1.19–1.62 million people within reach
-- **High Priority (Dark Purple):** 616K–1.19 million people
-- **Medium Priority (Light Purple):** 158K–616K people
-- **Lower Priority (Pale Purple):** 28K–158K people
-- **Lowest Priority (Very Pale Purple):** 5–28K people
+## How We Rank Sites
 
-**Data source:**
-- **ABS ERP 2024:** Australian Bureau of Statistics Estimated Resident Population (2024)
+Every site is ranked from **Highest Priority** to **Lowest Priority** based on one key measure:
 
-## 3. Accessibility by Transport Mode
+> **How many people live within a 20-minute trip?**
 
-**Reach zones show 20-minute travel distance by:**
-- **Car:** Major routes; assumes normal traffic conditions
-- **Bike:** Cycling distance on streets; assumes moderate fitness
-- **Walk:** Pedestrian distance; assumes safe, connected paths
+We calculate travel time by car, bike, and on foot, then count how many residents could reach each site in 20 minutes using any of those methods.
 
-**Data source:**
-- **OpenRouteService:** Open-source routing engine using OpenStreetMap road network
+**Why this matters:** A course that's easy to reach for more people will get more use and serve the community better.
 
-## 4. Size Filter
+### The Rankings Explained
 
-You can filter by minimum site area (2–5 hectares) to explore different course footprints.
+| Priority Level | Population Reach | What This Means |
+|---------------|------------------|-----------------|
+| **Highest Priority** (Deep Purple) | 1.19–1.62 million | Inner suburbs with excellent access |
+| **High Priority** (Dark Purple) | 616K–1.19 million | Well-connected urban areas |
+| **Medium Priority** (Purple) | 158K–616K | Suburban areas with good access |
+| **Lower Priority** (Light Purple) | 28K–158K | Outer suburbs or limited connections |
+| **Lowest Priority** (Very Light Purple) | 5–28K | Remote areas or poor transport links |
 
-## Technical Stack
+---
 
-- **Frontend:** Next.js 16, React 19, Mapbox GL JS
-- **Data Processing:** Python (GeoPandas, Shapely)
-- **Map Tiles:** Mapbox Outdoors style
-- **Routing:** OpenRouteService (ORS) v2
+## Using the Filters
 
-## Data Quality Note
+### Minimum Size Control
+Choose between **2, 3, 4, or 5 hectares** to see sites of different sizes:
+- **2 ha:** Small courses (6–9 holes, tight layout)
+- **3 ha:** Standard 9-hole course
+- **4 ha:** Comfortable 9-hole course (default)
+- **5 ha:** Large 9-hole or compact 18-hole course
 
-This analysis is based on publicly available data current as of December 2025. Population estimates are modeled; actual accessibility varies by season, time of day, and route quality. Use this as a starting point for site evaluation, not as a final decision tool.
+The count below updates to show how many sites match your filter.
+
+### Priority Toggles
+Click any priority level **on or off** to hide or show those sites. This helps you focus on specific areas.
+
+### Transport Mode Layers
+Toggle the colored zones around existing courses to see:
+- **Red zones (by Car):** 20-minute driving catchment
+- **Blue zones (by Bike):** 20-minute cycling catchment
+- **Green zones (on Foot):** 20-minute walking catchment
+
+These help you understand where existing courses already serve the community well.
+
+---
+
+## Where the Data Comes From
+
+**Land Information:**
+- **Vicmap Property** — Victorian government land ownership records
+- **OpenStreetMap** — Community-mapped parks and public spaces
+
+**Population Data:**
+- **Australian Bureau of Statistics (ABS)** — 2024 Estimated Resident Population
+
+**Travel Times:**
+- **OpenRouteService** — Real road networks and routing for car, bike, and walking
+
+**Built With:**
+Next.js, React, Mapbox GL JS, Python (GeoPandas)
+
+---
+
+## Important Things to Know
+
+✓ **This is a starting point**, not a final recommendation  
+✓ Population estimates are modeled from 2024 data  
+✓ Travel times assume normal conditions (no traffic jams, good weather)  
+✓ Land suitability depends on many factors beyond this analysis (terrain, access, regulations)  
+✓ Always verify site details and permissions before planning
+
+**Questions or feedback?** This tool is built to help the disc golf community identify opportunities. If you spot issues or have suggestions, we'd love to hear from you.
 `,
     initialViewState: {
       longitude: 145.0,
