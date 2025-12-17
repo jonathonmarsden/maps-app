@@ -1,0 +1,29 @@
+import { getMap } from '@/data/registry';
+import MapView from '@/components/MapView';
+import { notFound } from 'next/navigation';
+
+// In Next.js 15, params is a Promise
+export default async function MapPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const mapData = getMap(slug);
+
+  if (!mapData) {
+    notFound();
+  }
+
+  return (
+    <div className="relative w-full h-screen">
+      {/* Overlay Title */}
+      <div className="absolute top-4 left-4 z-10 bg-black/80 text-white p-4 rounded-lg backdrop-blur-sm max-w-md">
+        <h1 className="text-xl font-bold mb-1">{mapData.title}</h1>
+        <p className="text-sm text-gray-300">{mapData.description}</p>
+        <a href="/" className="text-xs text-blue-400 hover:underline mt-2 block">← Back to Atlas</a>
+      </div>
+
+      <MapView 
+        initialViewState={mapData.initialViewState} 
+        geoJsonData={mapData.geoJsonData} 
+      />
+    </div>
+  );
+}
