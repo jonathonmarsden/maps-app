@@ -16,9 +16,9 @@ export default function MethodologyPanel({ title, description, methodology }: Me
       {/* Title and Methodology Panel */}
       <div className="absolute top-4 left-4 z-20 bg-black/80 text-white rounded-lg backdrop-blur-sm overflow-hidden shadow-lg">
         {/* Title Section */}
-        <div className="p-4 border-b border-white/20">
-          <h1 className="text-xl font-bold mb-1">{title}</h1>
-          <p className="text-sm text-gray-300 mb-3">{description}</p>
+        <div className="p-3 border-b border-white/10">
+          <h1 className="text-xl font-bold mb-1 leading-tight">{title}</h1>
+          <p className="text-sm text-gray-300 mb-2 leading-snug">{description}</p>
           
           {/* Methodology Button */}
           {methodology && (
@@ -33,7 +33,7 @@ export default function MethodologyPanel({ title, description, methodology }: Me
 
         {/* Expandable Methodology Section */}
         {showMethodology && methodology && (
-          <div className="px-4 py-3 bg-black/50 border-t border-white/20 max-w-md max-h-[400px] overflow-y-auto">
+          <div className="px-3 py-2 bg-black/50 border-t border-white/10 max-w-md max-h-[380px] overflow-y-auto">
             <div className="prose prose-sm prose-invert max-w-none text-gray-100">
               <ReactMarkdown>{methodology}</ReactMarkdown>
             </div>

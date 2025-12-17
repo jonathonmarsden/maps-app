@@ -71,6 +71,24 @@ The goal of this tool is to identify underutilized public land that is highly ac
       zoom: 10
     },
     sources: [
+      // Render exclusions first so all labels sit above them
+      {
+        id: 'exclusions',
+        label: 'Exclusion Zones',
+        type: 'geojson',
+        data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
+        color: '#cc0000',
+        layers: [
+          {
+            id: 'exclusions-fill',
+            type: 'fill',
+            paint: {
+              'fill-color': '#cc0000',
+              'fill-opacity': 0.35
+            }
+          }
+        ]
+      },
       {
         id: 'candidates',
         label: 'Candidate Sites (Ranked)',
@@ -159,23 +177,6 @@ The goal of this tool is to identify underutilized public land that is highly ac
               'text-color': '#b10026',
               'text-halo-color': '#ffffff',
               'text-halo-width': 2.5
-            }
-          }
-        ]
-      },
-      {
-        id: 'exclusions',
-        label: 'Exclusion Zones',
-        type: 'geojson',
-        data: '/data/disc-golf/exclusion_zones_2_4km.geojson',
-        color: '#cc0000',
-        layers: [
-          {
-            id: 'exclusions-fill',
-            type: 'fill',
-            paint: {
-              'fill-color': '#cc0000',
-              'fill-opacity': 0.35
             }
           }
         ]
