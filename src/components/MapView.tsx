@@ -44,6 +44,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   const [minAreaHa, setMinAreaHa] = React.useState<number>(4); // Default to 4 ha for public view
   const [candidateFeatures, setCandidateFeatures] = React.useState<any[]>([]);
   const [candidateCount, setCandidateCount] = React.useState<number>(0);
+  const [showAccessZones, setShowAccessZones] = React.useState<boolean>(false);
 
   // Initialize visibility when sources change
   React.useEffect(() => {
@@ -113,66 +114,159 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     <div className="w-full h-screen relative">
       {/* Legend / Key */}
       {sources && sources.length > 0 && (
-        <div className="absolute bottom-8 right-4 z-10 bg-white/90 text-black p-4 rounded-lg backdrop-blur-sm border border-neutral-200 shadow-xl min-w-[240px] max-h-[500px] overflow-y-auto">
-          <h3 className="text-sm font-bold mb-3 uppercase tracking-wider text-neutral-600">Map Layers</h3>
-          <div className="space-y-3">
-            {sources
-              .map((source) => (
-              <div key={source.id}>
-                <div 
-                  className="flex items-center justify-between cursor-pointer hover:bg-black/5 p-1 rounded transition-colors"
-                  onClick={() => toggleVisibility(source.id)}
-                >
-                  <div className="flex items-center gap-2 font-medium">
-                    <span className={`text-sm ${!visibility[source.id] ? 'text-neutral-400 line-through' : 'text-neutral-800'}`}>
-                      {source.label || source.id}
-                    </span>
-                  </div>
-                  <div className={`w-8 h-4 rounded-full relative transition-colors ${visibility[source.id] ? 'bg-blue-600' : 'bg-neutral-300'}`}>
-                    <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${visibility[source.id] ? 'left-4.5' : 'left-0.5'}`} />
-                  </div>
-                </div>
-                
-                {/* Sub-legend items (individual rank toggles) */}
-                {visibility[source.id] && source.legendItems && (
-                  <div className="ml-2 mt-2 space-y-2 border-l-2 border-neutral-200 pl-2">
-                    {source.legendItems.map((item, idx) => {
-                      const rank = 5 - idx; // Rank 5 is first
-                      return (
-                        <div key={idx} className="flex items-center gap-2">
-                          <div 
-                            className="w-8 h-4 rounded-full relative cursor-pointer transition-colors"
-                            onClick={() => toggleRankVisibility(rank)}
-                            style={{ backgroundColor: rankVisibility[rank] ? item.color : '#d1d5db' }}
-                          >
-                            <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${rankVisibility[rank] ? 'left-4.5' : 'left-0.5'}`} />
-                          </div>
-                          <span className="text-xs text-neutral-600 flex-1">{item.label}</span>
-                        </div>
-                      );
-                    })}
+        <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-[320px] max-h-[700px] overflow-y-auto">
+          {/* Header */}
+          <div className="sticky top-0 bg-white/95 border-b border-neutral-200 px-4 py-3">
+            <h2 className="text-base font-bold text-neutral-900">Site Finder</h2>
+            <p className="text-xs text-neutral-500 mt-1">Find land suitable for new disc golf courses</p>
+          </div>
 
-                    {/* Min Area control */}
-                    <div className="pt-2">
-                      <div className="text-[11px] uppercase tracking-wide text-neutral-500 mb-1">Min Area</div>
-                      <div className="flex items-center gap-1 flex-wrap">
-                        {[2,3,4,5].map((ha) => (
-                          <button
-                            key={ha}
-                            onClick={(e) => { e.stopPropagation(); setMinAreaHa(ha); }}
-                            className={`px-2 py-1 rounded text-xs border transition-colors ${minAreaHa===ha ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50'}`}
-                            title={`Show candidates with area ≥ ${ha} ha`}
-                          >
-                            {ha} ha+
-                          </button>
-                        ))}
-                        <span className="ml-2 text-[11px] text-neutral-600 whitespace-nowrap">{candidateCount.toLocaleString()} sites</span>
+          <div className="px-4 py-4 space-y-6">
+            {/* SECTION 1: CANDIDATE SITES */}
+            <div>
+              <div className="mb-3">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-600 mb-3">Candidate Sites</h3>
+                <p className="text-xs text-neutral-600 mb-3 leading-relaxed">
+                  Sites are ranked by <strong>population within 20 minutes</strong> by car, bike, or foot.
+                </p>
+              </div>
+
+              {/* Priority Ranking Toggle */}
+              <div className="mb-4">
+                <div className="text-xs font-semibold text-neutral-700 mb-2.5">Priority Ranking</div>
+                <div className="space-y-1.5">
+                  {[
+                    { rank: 5, label: 'Highest Priority', color: '#4a1486', desc: '1.19–1.62M people' },
+                    { rank: 4, label: 'High Priority', color: '#6a51a3', desc: '616K–1.19M people' },
+                    { rank: 3, label: 'Medium Priority', color: '#9e9ac8', desc: '158K–616K people' },
+                    { rank: 2, label: 'Lower Priority', color: '#cbc9e2', desc: '28K–158K people' },
+                    { rank: 1, label: 'Lowest Priority', color: '#f2f0f7', desc: '5–28K people' },
+                  ].map(({ rank, label, color, desc }) => (
+                    <div
+                      key={rank}
+                      className="flex items-center gap-2.5 p-2 rounded hover:bg-neutral-50 cursor-pointer transition-colors"
+                      onClick={() => toggleRankVisibility(rank)}
+                    >
+                      <div
+                        className="w-5 h-5 rounded-sm border border-neutral-300"
+                        style={{
+                          backgroundColor: rankVisibility[rank] ? color : '#f3f4f6',
+                          borderColor: rankVisibility[rank] ? color : '#d1d5db'
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium text-neutral-900">{label}</div>
+                        <div className="text-[11px] text-neutral-500">{desc}</div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
-            ))}
+
+              {/* Minimum Size Filter */}
+              <div className="border-t border-neutral-200 pt-4">
+                <div className="text-xs font-semibold text-neutral-700 mb-2.5">Minimum Size</div>
+                <div className="flex items-center gap-2 flex-wrap mb-3">
+                  {[2, 3, 4, 5].map((ha) => (
+                    <button
+                      key={ha}
+                      onClick={() => setMinAreaHa(ha)}
+                      className={`px-3 py-1.5 rounded text-xs font-medium border-2 transition-all ${
+                        minAreaHa === ha
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                          : 'bg-white text-neutral-700 border-neutral-300 hover:border-blue-400 hover:bg-blue-50'
+                      }`}
+                      title={`Show sites with area ≥ ${ha} hectares`}
+                    >
+                      {ha} ha
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-neutral-600">
+                    <span className="font-semibold text-neutral-900">{candidateCount.toLocaleString()}</span> sites match
+                  </span>
+                  <span className="text-[11px] text-neutral-500">
+                    ({((candidateCount / (candidateFeatures.length || 1)) * 100).toFixed(0)}%)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 2: CURRENT COURSES & ACCESS ZONES */}
+            <div className="border-t border-neutral-200 pt-4">
+              <button
+                onClick={() => setShowAccessZones(!showAccessZones)}
+                className="w-full text-left flex items-center justify-between p-2 hover:bg-neutral-50 rounded transition-colors mb-2"
+              >
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-600">
+                    Existing Courses & Reach
+                  </h3>
+                  <p className="text-[11px] text-neutral-500 mt-0.5">
+                    20-minute accessible area by transport mode
+                  </p>
+                </div>
+                <svg
+                  className={`w-4 h-4 text-neutral-500 transition-transform ${showAccessZones ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+
+              {showAccessZones && (
+                <div className="space-y-2 ml-1">
+                  {/* Existing Courses */}
+                  <div
+                    className="flex items-center gap-2.5 p-2 rounded hover:bg-neutral-50 cursor-pointer transition-colors"
+                    onClick={() => toggleVisibility('existing-courses')}
+                  >
+                    <div className="w-5 h-5 rounded-full bg-red-600 border-2 border-red-700" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-medium text-neutral-900">Existing Courses</div>
+                      <div className="text-[11px] text-neutral-500">12 active locations</div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={visibility['existing-courses']}
+                      onChange={() => {}}
+                      className="w-4 h-4"
+                    />
+                  </div>
+
+                  {/* Access Zones */}
+                  {[
+                    { id: 'exclusions-drive', label: 'by Car', color: '#cc0000', desc: '20-min drive' },
+                    { id: 'exclusions-cycle', label: 'by Bike', color: '#1e88e5', desc: '20-min cycle' },
+                    { id: 'exclusions-walk', label: 'on Foot', color: '#2e7d32', desc: '20-min walk' },
+                  ].map(({ id, label, color, desc }) => (
+                    <div
+                      key={id}
+                      className="flex items-center gap-2.5 p-2 rounded hover:bg-neutral-50 cursor-pointer transition-colors"
+                      onClick={() => toggleVisibility(id)}
+                    >
+                      <div
+                        className="w-5 h-5 rounded opacity-40"
+                        style={{ backgroundColor: color }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium text-neutral-900">{label}</div>
+                        <div className="text-[11px] text-neutral-500">{desc}</div>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={visibility[id]}
+                        onChange={() => {}}
+                        className="w-4 h-4"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
