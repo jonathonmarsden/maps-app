@@ -41,7 +41,9 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   // State to track visibility of each source
   const [visibility, setVisibility] = React.useState<Record<string, boolean>>({});
   const [rankVisibility, setRankVisibility] = React.useState<Record<number, boolean>>({});
-  const [minAreaHa, setMinAreaHa] = React.useState<number>(2); // Minimum area in hectares
+  const [minAreaHa, setMinAreaHa] = React.useState<number>(4); // Default to 4 ha for public view
+  const [candidateFeatures, setCandidateFeatures] = React.useState<any[]>([]);
+  const [candidateCount, setCandidateCount] = React.useState<number>(0);
 
   // Initialize visibility when sources change
   React.useEffect(() => {
@@ -59,6 +61,39 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
       setRankVisibility(initialRankVisibility);
     }
   }, [sources]);
+
+  // Load candidates GeoJSON features for client-side counting
+  React.useEffect(() => {
+    if (!sources) return;
+    const candidates = sources.find(s => s.id === 'candidates');
+    if (!candidates) return;
+    if (typeof candidates.data === 'string') {
+      fetch(candidates.data)
+        .then(res => res.json())
+        .then(json => {
+          const feats = Array.isArray(json.features) ? json.features : [];
+          setCandidateFeatures(feats);
+        })
+        .catch(() => setCandidateFeatures([]));
+    }
+  }, [sources]);
+
+  // Recompute filtered candidate count when filters change
+  React.useEffect(() => {
+    if (!candidateFeatures.length) { setCandidateCount(0); return; }
+    const activeRanks = Object.entries(rankVisibility)
+      .filter(([_, vis]) => vis)
+      .map(([r]) => parseInt(r));
+    const threshold = minAreaHa * 10000; // sqm
+    const count = candidateFeatures.filter(f => {
+      const props = f.properties || {};
+      const area = Number(props.area_sqm || 0);
+      const rank = Number(props.rank || 0);
+      const rankOk = activeRanks.length ? activeRanks.includes(rank) : false;
+      return area >= threshold && rankOk;
+    }).length;
+    setCandidateCount(count);
+  }, [candidateFeatures, rankVisibility, minAreaHa]);
 
   const toggleVisibility = (id: string) => {
     setVisibility(prev => ({
@@ -120,7 +155,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                     {/* Min Area control */}
                     <div className="pt-2">
                       <div className="text-[11px] uppercase tracking-wide text-neutral-500 mb-1">Min Area</div>
-                      <div className="flex gap-1">
+                      <div className="flex items-center gap-1 flex-wrap">
                         {[2,3,4,5].map((ha) => (
                           <button
                             key={ha}
@@ -131,6 +166,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                             {ha} ha+
                           </button>
                         ))}
+                        <span className="ml-2 text-[11px] text-neutral-600 whitespace-nowrap">{candidateCount.toLocaleString()} sites</span>
                       </div>
                     </div>
                   </div>
