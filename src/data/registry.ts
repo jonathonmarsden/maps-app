@@ -88,9 +88,9 @@ Click any priority level **on or off** to hide or show those sites. This helps y
 
 ### Planning Zone Filters
 Filter by planning zone suitability:
-- **Public Park & Recreation (PPRZ):** Highest-priority sites (default on)
-- **Public Use (PUZ):** Government-managed community facilities (default on)
-- **Public Conservation (PCRZ):** Conservation areas where low-impact recreation is possible (default on)
+- **Public Park & Recreation (PPRZ):** Default on (most suitable)
+- **Public Conservation (PCRZ):** Default off (environmentally sensitive; opt-in)
+- **Public Use subcodes (PUZ1/2/3/5/6/7):** All visible as toggles. Defaults: PUZ2 (Education), PUZ3 (Health/Community), and PUZ6 (Local Government) ON; PUZ1 (Service/Utility), PUZ5 (Cemetery), PUZ7 (Other) OFF. Labels clarify each subcode.
 
 ### Transport Mode Layers
 Toggle the colored zones around existing courses to see:

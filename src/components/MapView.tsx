@@ -59,11 +59,19 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   const [visibility, setVisibility] = React.useState<Record<string, boolean>>({});
   const [rankVisibility, setRankVisibility] = React.useState<Record<number, boolean>>({});
   const [minAreaHa, setMinAreaHa] = React.useState<number>(4); // Default to 4 ha for public view
-  const [zoneVisibility, setZoneVisibility] = React.useState<Record<string, boolean>>({
-    PPRZ: true,
-    PUZ: true,
-    PCRZ: true
-  });
+  const zoneOptions = [
+    { code: 'PPRZ', label: 'Public Park & Recreation', desc: 'Parks & recreation land (default on)', defaultOn: true },
+    { code: 'PCRZ', label: 'Conservation', desc: 'Environmentally sensitive; case-by-case', defaultOn: false },
+    { code: 'PUZ1', label: 'Public Use — Service & Utility', desc: 'Water/power/comms/retarding basins', defaultOn: false },
+    { code: 'PUZ2', label: 'Public Use — Education', desc: 'Schools, TAFEs, universities', defaultOn: true },
+    { code: 'PUZ3', label: 'Public Use — Health/Community', desc: 'Hospitals, health/community facilities', defaultOn: true },
+    { code: 'PUZ5', label: 'Public Use — Cemetery', desc: 'Cemeteries/crematoria', defaultOn: false },
+    { code: 'PUZ6', label: 'Public Use — Local Government', desc: 'Council land/depots/offices', defaultOn: true },
+    { code: 'PUZ7', label: 'Public Use — Other', desc: 'Miscellaneous public purposes', defaultOn: false },
+  ];
+  const [zoneVisibility, setZoneVisibility] = React.useState<Record<string, boolean>>(
+    Object.fromEntries(zoneOptions.map(({ code, defaultOn }) => [code, defaultOn]))
+  );
   const [candidateFeatures, setCandidateFeatures] = React.useState<any[]>([]);
   const [candidateCount, setCandidateCount] = React.useState<number>(0);
 
@@ -240,12 +248,11 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                 {/* Planning Zone Filter */}
                 <div className="border-t border-neutral-200 pt-2">
                   <div className="text-[9px] font-semibold text-neutral-700 mb-1">Planning Zones</div>
+                  <p className="text-[8px] text-neutral-500 mb-1.5 leading-snug">
+                    Parks default on. Conservation is opt-in. Public Use subcodes are opt-in except education/health and local gov.
+                  </p>
                   <div className="space-y-0.5">
-                    {[
-                      { code: 'PPRZ', label: 'Public Park', desc: 'Highest priority' },
-                      { code: 'PUZ', label: 'Public Use', desc: 'Government facilities' },
-                      { code: 'PCRZ', label: 'Conservation', desc: 'Low-impact allowed' },
-                    ].map(({ code, label, desc }) => (
+                    {zoneOptions.map(({ code, label, desc }) => (
                       <div
                         key={code}
                         className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
