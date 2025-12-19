@@ -369,55 +369,8 @@ The goal: Make disc golf more accessible to more Victorians by identifying high-
       zoom: 10
     },
     sources: [
-      // Render exclusions first so all labels sit above them
-        {
-          id: 'exclusions-drive',
-          label: 'Exclusions: 20-min Drive',
-          type: 'geojson',
-          data: '/data/disc-golf/exclusion_zones_drive_20min.geojson',
-          layers: [
-            {
-              id: 'exclusions-drive-fill',
-              type: 'fill',
-              paint: {
-                'fill-color': '#cc0000',
-                'fill-opacity': 0.30
-              }
-            }
-          ]
-        },
-        {
-          id: 'exclusions-cycle',
-          label: 'Exclusions: 20-min Cycle',
-          type: 'geojson',
-          data: '/data/disc-golf/exclusion_zones_cycle_20min.geojson',
-          layers: [
-            {
-              id: 'exclusions-cycle-fill',
-              type: 'fill',
-              paint: {
-                'fill-color': '#1e88e5',
-                'fill-opacity': 0.22
-              }
-            }
-          ]
-        },
-        {
-          id: 'exclusions-walk',
-          label: 'Exclusions: 20-min Walk',
-          type: 'geojson',
-          data: '/data/disc-golf/exclusion_zones_walk_20min.geojson',
-          layers: [
-            {
-              id: 'exclusions-walk-fill',
-              type: 'fill',
-              paint: {
-                'fill-color': '#2e7d32',
-                'fill-opacity': 0.18
-              }
-            }
-          ]
-        },
+      // Layer order (bottom to top): Candidates → Exclusion zones → Existing courses
+      // This ensures candidate sites appear below the reach zones, making it easy to see coverage
       {
         id: 'candidates',
         label: 'Candidate Sites (Ranked)',
@@ -466,6 +419,56 @@ The goal: Make disc golf more accessible to more Victorians by identifying high-
           }
         ]
       },
+      // Exclusion zones (20-min reach from existing courses) - render above candidates
+      {
+        id: 'exclusions-drive',
+        label: 'Exclusions: 20-min Drive',
+        type: 'geojson',
+        data: '/data/disc-golf/exclusion_zones_drive_20min.geojson',
+        layers: [
+          {
+            id: 'exclusions-drive-fill',
+            type: 'fill',
+            paint: {
+              'fill-color': '#cc0000',
+              'fill-opacity': 0.30
+            }
+          }
+        ]
+      },
+      {
+        id: 'exclusions-cycle',
+        label: 'Exclusions: 20-min Cycle',
+        type: 'geojson',
+        data: '/data/disc-golf/exclusion_zones_cycle_20min.geojson',
+        layers: [
+          {
+            id: 'exclusions-cycle-fill',
+            type: 'fill',
+            paint: {
+              'fill-color': '#1e88e5',
+              'fill-opacity': 0.22
+            }
+          }
+        ]
+      },
+      {
+        id: 'exclusions-walk',
+        label: 'Exclusions: 20-min Walk',
+        type: 'geojson',
+        data: '/data/disc-golf/exclusion_zones_walk_20min.geojson',
+        layers: [
+          {
+            id: 'exclusions-walk-fill',
+            type: 'fill',
+            paint: {
+              'fill-color': '#2e7d32',
+              'fill-opacity': 0.18
+            }
+          }
+        ]
+      },
+      // Existing courses - render on top of everything
       {
         id: 'existing-courses',
         label: 'Existing Courses',
