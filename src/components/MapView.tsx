@@ -386,22 +386,28 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
               
               // For rank-based filtering (candidates layer)
               if (isVisible && (layer.id === 'candidates-fill' || layer.id === 'candidates-label')) {
-                // Dynamically update the filter based on rank visibility
+                // Dynamically update the filter based on rank and zone visibility
                 const activeRanks = Object.entries(rankVisibility)
                   .filter(([_, visible]) => visible)
                   .map(([rank, _]) => parseInt(rank));
-                
-                if (activeRanks.length === 0) {
+                const activeZones = Object.entries(zoneVisibility)
+                  .filter(([_, visible]) => visible)
+                  .map(([zone, _]) => zone);
+
+                if (activeRanks.length === 0 || activeZones.length === 0) {
                   isVisible = false;
                 } else {
-                  // Base area filter (area_sqm ≥ minAreaHa * 10,000)
                   const areaFilter: any = ['>=', ['get', 'area_sqm'], ['*', 10000, minAreaHa]];
-                  let filter: any = areaFilter;
+                  const rankFilter: any = ['in', ['get', 'rank'], ['literal', activeRanks]];
+                  // Zone filter uses prefix match to support PUZ variants
+                  const zonePrefixFilters = activeZones.map((z) => ['==', ['slice', ['get', 'ZONE_CODE'], 0, z.length], z]);
+                  const zoneFilter: any = ['any', ...zonePrefixFilters];
+
+                  let filter: any = ['all', areaFilter, zoneFilter];
                   if (activeRanks.length < 5) {
-                    // Filter for active ranks only in addition to area
-                    const rankFilter: any = ['in', ['get', 'rank'], ['literal', activeRanks]];
-                    filter = ['all', areaFilter, rankFilter];
+                    filter = ['all', areaFilter, rankFilter, zoneFilter];
                   }
+
                   return (
                     <Layer 
                       key={layer.id} 
