@@ -79,11 +79,20 @@ We use a **purple gradient** because it works well for people with color blindne
 
 ### Step 1: Start with Existing Courses
 
-We identified **12 active disc golf courses** operating in Victoria using the Disc Golf Australia registry:
-- Hilly Fields, Tecoma
-- Black Spur, Narbethong
-- Laurie Kavanagh, Ivanhoe
-- And 9 others across the metro area
+We identified **12 active disc golf courses** in the Greater Melbourne area:
+
+1. Ruffey Lake Park (Doncaster)
+2. Stony Creek Reserve (Yarraville)
+3. Bald Hill Park (Scoresby)
+4. Llewellyn Park (Ferntree Gully)
+5. Little Blind Creek (Melton)
+6. Barwon Valley (Geelong)
+7. Caulfield Racecourse (Caulfield)
+8. Heathdale Glen Orden Trial Course (Werribee)
+9. Bundoora Park (Bundoora)
+10. Livingstone Primary School (Donvale)
+11. Braeside Park (Braeside)
+12. Bicentennial Park (Chelsea)
 
 Why start here? These courses show where community demand already exists and where disc golf infrastructure is proven.
 
