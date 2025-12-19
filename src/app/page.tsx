@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 export default function Home() {
-  // Redirect the naked subdomain to the main lobby site
+  // Root of maps.jonathonmarsden.com should not render content; it forwards to the main site
   redirect('https://jonathonmarsden.com');
 }
 

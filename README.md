@@ -50,3 +50,15 @@ The Maps App is a Next.js application designed to render high-fidelity, interact
 Deployed on **Vercel**.
 *   **Project:** `maps-app`
 *   **Domain:** `maps.jonathonmarsden.com`
+*   Root (`/`) intentionally redirects to `https://jonathonmarsden.com`; only slugs (e.g., `/disc-golf-site-finder`) serve map content.
+
+## External tools (modules pipeline)
+
+Keep external tools in their own repos, but publish their built artifacts into this host under `public/modules/<tool>/`.
+
+Workflow (Option B):
+- Each tool stays in its own repo with its own CI.
+- CI builds the tool and copies the static output into this repo’s `public/modules/<tool>/` path (e.g., via GitHub Actions artifact sync).
+- The Maps host serves the artifact at `https://maps.jonathonmarsden.com/modules/<tool>/` (pure static, no server code).
+- Set a 301 redirect from the tool’s old domain/path to the new `/modules/<tool>/` URL when cutting over.
+- Keep secrets only in the tool repo’s CI/Vercel env; no shared secrets in this host.
