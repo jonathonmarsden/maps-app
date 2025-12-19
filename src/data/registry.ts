@@ -86,6 +86,12 @@ The count below updates to show how many sites match your filter.
 ### Priority Toggles
 Click any priority level **on or off** to hide or show those sites. This helps you focus on specific areas.
 
+### Planning Zone Filters
+Filter by planning zone suitability:
+- **Public Park & Recreation (PPRZ):** Highest-priority sites (default on)
+- **Public Use (PUZ):** Government-managed community facilities (default on)
+- **Public Conservation (PCRZ):** Conservation areas where low-impact recreation is possible (default on)
+
 ### Transport Mode Layers
 Toggle the colored zones around existing courses to see:
 - **Red zones (by Car):** 20-minute driving catchment
@@ -99,6 +105,7 @@ These help you understand where existing courses already serve the community wel
 ## Where the Data Comes From
 
 **Land Information:**
+- **Vicmap Planning Zones** — Victorian planning scheme zoning (PPRZ, PUZ, PCRZ)
 - **Vicmap Property** — Victorian government land ownership records
 - **OpenStreetMap** — Community-mapped parks and public spaces
 
@@ -110,6 +117,18 @@ These help you understand where existing courses already serve the community wel
 
 **Built With:**
 Next.js, React, Mapbox GL JS, Python (GeoPandas)
+
+---
+
+## About Planning Zones
+
+Every candidate site is verified against Victorian planning zones to ensure it's **legally designated for public use or recreation**:
+
+- **PPRZ (Public Park & Recreation Zone):** Highest priority—explicitly zoned for parks and recreation
+- **PUZ (Public Use Zone):** Government facilities and community-oriented land
+- **PCRZ (Public Conservation & Resource Zone):** Conservation land where low-impact recreation may be allowed
+
+By filtering to these zones, we ensure each candidate has a legal pathway to become a public disc golf course.
 
 ---
 

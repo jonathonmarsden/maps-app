@@ -59,6 +59,11 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
   const [visibility, setVisibility] = React.useState<Record<string, boolean>>({});
   const [rankVisibility, setRankVisibility] = React.useState<Record<number, boolean>>({});
   const [minAreaHa, setMinAreaHa] = React.useState<number>(4); // Default to 4 ha for public view
+  const [zoneVisibility, setZoneVisibility] = React.useState<Record<string, boolean>>({
+    PPRZ: true,
+    PUZ: true,
+    PCRZ: true
+  });
   const [candidateFeatures, setCandidateFeatures] = React.useState<any[]>([]);
   const [candidateCount, setCandidateCount] = React.useState<number>(0);
 
@@ -101,16 +106,21 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     const activeRanks = Object.entries(rankVisibility)
       .filter(([_, vis]) => vis)
       .map(([r]) => parseInt(r));
+    const activeZones = Object.entries(zoneVisibility)
+      .filter(([_, vis]) => vis)
+      .map(([z]) => z);
     const threshold = minAreaHa * 10000; // sqm
     const count = candidateFeatures.filter(f => {
       const props = f.properties || {};
       const area = Number(props.area_sqm || 0);
       const rank = Number(props.rank || 0);
+      const zone = String(props.ZONE_CODE || '');
       const rankOk = activeRanks.length ? activeRanks.includes(rank) : false;
-      return area >= threshold && rankOk;
+      const zoneOk = activeZones.length ? activeZones.some(z => zone.startsWith(z)) : false;
+      return area >= threshold && rankOk && zoneOk;
     }).length;
     setCandidateCount(count);
-  }, [candidateFeatures, rankVisibility, minAreaHa]);
+  }, [candidateFeatures, rankVisibility, minAreaHa, zoneVisibility]);
 
   const toggleVisibility = (id: string) => {
     setVisibility(prev => ({
@@ -123,6 +133,13 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     setRankVisibility(prev => ({
       ...prev,
       [rank]: !prev[rank]
+    }));
+  };
+
+  const toggleZoneVisibility = (zone: string) => {
+    setZoneVisibility(prev => ({
+      ...prev,
+      [zone]: !prev[zone]
     }));
   };
 
@@ -211,13 +228,41 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                     </button>
                   ))}
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2.5">
                   <span className="text-[9px] text-neutral-600">
                     <span className="font-semibold text-neutral-900">{candidateCount.toLocaleString()}</span> sites
                   </span>
                   <span className="text-[8px] text-neutral-500">
                     ({((candidateCount / (candidateFeatures.length || 1)) * 100).toFixed(0)}%)
                   </span>
+                </div>
+
+                {/* Planning Zone Filter */}
+                <div className="border-t border-neutral-200 pt-2">
+                  <div className="text-[9px] font-semibold text-neutral-700 mb-1">Planning Zones</div>
+                  <div className="space-y-0.5">
+                    {[
+                      { code: 'PPRZ', label: 'Public Park', desc: 'Highest priority' },
+                      { code: 'PUZ', label: 'Public Use', desc: 'Government facilities' },
+                      { code: 'PCRZ', label: 'Conservation', desc: 'Low-impact allowed' },
+                    ].map(({ code, label, desc }) => (
+                      <div
+                        key={code}
+                        className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={zoneVisibility[code]}
+                          onChange={() => toggleZoneVisibility(code)}
+                          className="w-4 h-4 rounded border-neutral-300 text-blue-600 cursor-pointer"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[9px] font-medium text-neutral-900 leading-tight">{label}</div>
+                          <div className="text-[8px] text-neutral-500 leading-tight">{desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
