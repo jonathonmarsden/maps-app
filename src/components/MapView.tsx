@@ -168,7 +168,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
       {sources && sources.length > 0 && (
         <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-46.75 max-w-46.75 max-h-[85vh] overflow-y-auto" role="region" aria-label="Map legend and filter controls">
           {/* Title Section */}
-          <div className="sticky top-0 bg-linear-to-b from-white to-neutral-50 border-b border-neutral-200 px-3 py-3">
+          <div className="sticky top-0 z-10 bg-linear-to-b from-white to-neutral-50 border-b border-neutral-200 px-3 py-3">
             <h2 className="text-sm font-bold text-neutral-900 mb-1.5 leading-tight">{title}</h2>
             <p className="text-[10px] text-neutral-600 mb-2 leading-snug">{description}</p>
             {methodology && onMethodologyOpen && (

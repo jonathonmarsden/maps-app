@@ -49,13 +49,27 @@ We use a **purple gradient** because it works well for people with color blindne
 
 ### Reading the Rankings
 
-| **Rank** | **Color** | **Population Within 20 Min** | **What This Means** |
-|:---:|:---:|:---:|:---|
-| **5** | Deep Purple | 1.19–1.62 million | **Excellent Reach** — Serves major sections of metro Melbourne. Inner suburbs, multiple transport modes (car, bus, train, bike, walk). High demand = high usage. |
-| **4** | Dark Purple | 616K–1.19 million | **Strong Reach** — Well-connected urban areas. Good car access; reasonable bus/train. Solid catchment from 2–3 suburbs. |
-| **3** | Medium Purple | 158K–616K | **Good Reach** — Suburban areas with decent connectivity. Mostly car-dependent but some public transport. Serves local + nearby areas. |
-| **2** | Light Purple | 28K–158K | **Moderate Reach** — Outer suburbs or isolated pockets. Car-dependent, weak public transport, long travel times for pedestrians. |
-| **1** | Very Light Purple | 5–28K | **Limited Reach** — Regional/remote areas. Very sparse population, few transport options. Good for community-building but not high-traffic sites. |
+**Rank 5: Excellent Reach** (Deep Purple)  
+→ Population: 1.19–1.62 million people within 20 minutes  
+→ Serves major sections of metro Melbourne. Inner suburbs, multiple transport modes (car, bus, train, bike, walk). High demand = high usage.
+
+**Rank 4: Strong Reach** (Dark Purple)  
+→ Population: 616K–1.19 million people  
+→ Well-connected urban areas. Good car access; reasonable bus/train. Solid catchment from 2–3 suburbs.
+
+**Rank 3: Good Reach** (Medium Purple)  
+→ Population: 158K–616K people  
+→ Suburban areas with decent connectivity. Mostly car-dependent but some public transport. Serves local + nearby areas.
+
+**Rank 2: Moderate Reach** (Light Purple)  
+→ Population: 28K–158K people  
+→ Outer suburbs or isolated pockets. Car-dependent, weak public transport, long travel times for pedestrians.
+
+**Rank 1: Limited Reach** (Very Light Purple)  
+→ Population: 5–28K people  
+→ Regional/remote areas. Very sparse population, few transport options. Good for community-building but not high-traffic sites.
+
+---
 
 **Why the numbers matter:** The ranks aren't arbitrary. They represent bands of actual population data. A Rank 5 site reaches 1.19M+ people; a Rank 4 drops to 616K. This natural clustering helps you understand scale.
 
