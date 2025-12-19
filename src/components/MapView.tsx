@@ -7,18 +7,29 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 // Toggle switch component
-const ToggleSwitch = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
+const ToggleSwitch = ({ checked, onChange, label }: { checked: boolean; onChange: () => void; label?: string }) => (
   <button
     onClick={onChange}
-    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+    onKeyDown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onChange();
+      }
+    }}
+    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 outline-none ${
       checked ? 'bg-blue-600' : 'bg-neutral-300'
     }`}
-    aria-label="Toggle"
+    aria-pressed={checked}
+    aria-label={label ? `Toggle ${label} (${checked ? 'on' : 'off'})` : 'Toggle'}
+    aria-checked={checked}
+    role="switch"
+    tabIndex={0}
   >
     <span
       className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
         checked ? 'translate-x-5' : 'translate-x-0.5'
       }`}
+      aria-hidden="true"
     />
   </button>
 );
@@ -155,15 +166,16 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
     <div className="w-full h-screen relative">
       {/* Legend / Key */}
       {sources && sources.length > 0 && (
-        <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-[187px] max-w-[187px] max-h-[85vh] overflow-y-auto">
+        <div className="absolute bottom-8 right-4 z-10 bg-white/95 text-black rounded-lg backdrop-blur-sm border border-neutral-200 shadow-2xl min-w-46.75 max-w-46.75 max-h-[85vh] overflow-y-auto" role="region" aria-label="Map legend and filter controls">
           {/* Title Section */}
-          <div className="sticky top-0 bg-gradient-to-b from-white to-neutral-50 border-b border-neutral-200 px-3 py-3">
+          <div className="sticky top-0 bg-linear-to-b from-white to-neutral-50 border-b border-neutral-200 px-3 py-3">
             <h2 className="text-sm font-bold text-neutral-900 mb-1.5 leading-tight">{title}</h2>
             <p className="text-[10px] text-neutral-600 mb-2 leading-snug">{description}</p>
             {methodology && onMethodologyOpen && (
               <button
                 onClick={onMethodologyOpen}
-                className="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded transition-colors font-medium w-full"
+                className="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded transition-colors font-medium w-full focus:ring-2 focus:ring-offset-2 focus:ring-blue-800 outline-none"
+                aria-label="Open methodology and how it works guide"
               >
                 How It Works
               </button>
@@ -182,22 +194,22 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
 
               {/* Priority Ranking Toggle */}
               <div className="mb-2.5">
-                <div className="text-[9px] font-semibold text-neutral-700 mb-0.5">Priority Ranking</div>
-                <p className="text-[8px] text-neutral-500 mb-1.5">Toggle on/off</p>
+                <div className="text-[9px] font-semibold text-neutral-700 mb-0.5">Reach Ranking</div>
+                <p className="text-[8px] text-neutral-500 mb-1.5">By population accessibility (20 min)</p>
                 <div className="space-y-0.5">
                   {[
-                    { rank: 5, label: 'Highest Priority', color: '#4a1486', desc: '1.19–1.62M people' },
-                    { rank: 4, label: 'High Priority', color: '#6a51a3', desc: '616K–1.19M people' },
-                    { rank: 3, label: 'Medium Priority', color: '#9e9ac8', desc: '158K–616K people' },
-                    { rank: 2, label: 'Lower Priority', color: '#cbc9e2', desc: '28K–158K people' },
-                    { rank: 1, label: 'Lowest Priority', color: '#f2f0f7', desc: '5–28K people' },
+                    { rank: 5, label: 'Excellent Reach', color: '#4a1486', desc: '1.19–1.62M people' },
+                    { rank: 4, label: 'Strong Reach', color: '#6a51a3', desc: '616K–1.19M people' },
+                    { rank: 3, label: 'Good Reach', color: '#9e9ac8', desc: '158K–616K people' },
+                    { rank: 2, label: 'Moderate Reach', color: '#cbc9e2', desc: '28K–158K people' },
+                    { rank: 1, label: 'Limited Reach', color: '#f2f0f7', desc: '5–28K people' },
                   ].map(({ rank, label, color, desc }) => (
                     <div
                       key={rank}
                       className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
                     >
                       <div
-                        className="w-3 h-3 rounded-sm flex-shrink-0"
+                        className="w-3 h-3 rounded-sm shrink-0"
                         style={{
                           backgroundColor: color,
                           opacity: rankVisibility[rank] ? 1 : 0.3,
@@ -209,6 +221,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                         <div className="text-[8px] text-neutral-500 leading-tight">{desc}</div>
                       </div>
                       <ToggleSwitch
+                        label={label}
                         checked={rankVisibility[rank]}
                         onChange={() => toggleRankVisibility(rank)}
                       />
@@ -225,12 +238,13 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                     <button
                       key={ha}
                       onClick={() => setMinAreaHa(ha)}
-                      className={`px-2 py-1 rounded text-[9px] font-medium border transition-all ${
+                      className={`px-2 py-1 rounded text-[9px] font-medium border transition-all focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 outline-none ${
                         minAreaHa === ha
                           ? 'bg-blue-600 text-white border-blue-600'
                           : 'bg-white text-neutral-700 border-neutral-300 hover:border-blue-400'
                       }`}
-                      title={`Show sites with area ≥ ${ha} hectares`}
+                      aria-label={`Filter to ${ha} hectare minimum sites${minAreaHa === ha ? ' (selected)' : ''}`}
+                      aria-pressed={minAreaHa === ha}
                     >
                       {ha}ha
                     </button>
@@ -258,15 +272,21 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                         className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
                       >
                         <input
+                          id={`zone-${code}`}
                           type="checkbox"
                           checked={zoneVisibility[code]}
                           onChange={() => toggleZoneVisibility(code)}
-                          className="w-4 h-4 rounded border-neutral-300 text-blue-600 cursor-pointer"
+                          className="w-4 h-4 rounded border-neutral-300 text-blue-600 cursor-pointer focus:ring-2 focus:ring-offset-1 focus:ring-blue-500"
+                          aria-label={label}
+                          aria-describedby={`zone-${code}-desc`}
                         />
-                        <div className="flex-1 min-w-0">
+                        <label 
+                          htmlFor={`zone-${code}`} 
+                          className="flex-1 min-w-0 cursor-pointer"
+                        >
                           <div className="text-[9px] font-medium text-neutral-900 leading-tight">{label}</div>
-                          <div className="text-[8px] text-neutral-500 leading-tight">{desc}</div>
-                        </div>
+                          <div className="text-[8px] text-neutral-500 leading-tight" id={`zone-${code}-desc`}>{desc}</div>
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -288,12 +308,13 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
               <div className="space-y-1">
                   {/* Existing Courses */}
                   <div className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors">
-                    <div className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-700 flex-shrink-0" />
+                    <div className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-700 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="text-[9px] font-medium text-neutral-900 leading-tight">Existing</div>
                       <div className="text-[8px] text-neutral-500 leading-tight">12 active</div>
                     </div>
                     <ToggleSwitch
+                      label="Existing courses"
                       checked={visibility['existing-courses']}
                       onChange={() => toggleVisibility('existing-courses')}
                     />
@@ -310,7 +331,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                       className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
                     >
                       <div
-                        className="w-3.5 h-3.5 rounded flex-shrink-0"
+                        className="w-3.5 h-3.5 rounded shrink-0"
                         style={{
                           backgroundColor: color,
                           opacity: visibility[id] ? 0.4 : 0.15
@@ -321,6 +342,7 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
                         <div className="text-[8px] text-neutral-500 leading-tight">{desc}</div>
                       </div>
                       <ToggleSwitch
+                        label={`${label} 20-minute zone`}
                         checked={visibility[id]}
                         onChange={() => toggleVisibility(id)}
                       />
