@@ -294,55 +294,61 @@ export default function MapView({ initialViewState, geoJsonData, enable3d, title
               </div>
             </div>
 
-            {/* SECTION 2: CURRENT COURSES & ACCESS ZONES */}
+            {/* SECTION 2: EXISTING COURSES & COVERAGE */}
             <div className="border-t border-neutral-200 pt-2.5">
               <div className="mb-2">
                 <h3 className="text-[9px] font-bold uppercase tracking-wider text-neutral-600 mb-1">
-                  Existing & Reach
+                  Existing Courses
                 </h3>
-                <p className="text-[8px] text-neutral-600 leading-snug">
-                  Toggle layers on/off
+                <p className="text-[8px] text-neutral-600 leading-snug mb-2">
+                  Show current courses and their 20-min reach zones
                 </p>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                   {/* Existing Courses */}
                   <div className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors">
                     <div className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-700 shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <div className="text-[9px] font-medium text-neutral-900 leading-tight">Existing</div>
-                      <div className="text-[8px] text-neutral-500 leading-tight">12 active</div>
+                      <div className="text-[9px] font-semibold text-neutral-900 leading-tight">Course Locations</div>
+                      <div className="text-[8px] text-neutral-500 leading-tight">12 active courses</div>
                     </div>
                     <ToggleSwitch
-                      label="Existing courses"
+                      label="Course locations"
                       checked={visibility['existing-courses']}
                       onChange={() => toggleVisibility('existing-courses')}
                     />
                   </div>
 
+                  {/* Coverage Zones Section Header */}
+                  <div className="mt-2 mb-0.5 px-1">
+                    <div className="text-[8.5px] font-bold text-neutral-700 leading-tight">Coverage Zones</div>
+                    <div className="text-[7.5px] text-neutral-500 leading-tight">Areas within 20 min of any course</div>
+                  </div>
+
                   {/* Access Zones */}
                   {[
-                    { id: 'exclusions-drive', label: 'Car', color: '#cc0000', desc: '20min' },
-                    { id: 'exclusions-cycle', label: 'Bike', color: '#1e88e5', desc: '20min' },
-                    { id: 'exclusions-walk', label: 'Walk', color: '#2e7d32', desc: '20min' },
+                    { id: 'exclusions-drive', label: 'By Car', color: '#cc0000', desc: 'Driving access' },
+                    { id: 'exclusions-cycle', label: 'By Bike', color: '#1e88e5', desc: 'Cycling access' },
+                    { id: 'exclusions-walk', label: 'On Foot', color: '#2e7d32', desc: 'Walking access' },
                   ].map(({ id, label, color, desc }) => (
                     <div
                       key={id}
                       className="flex items-center gap-1.5 p-1 rounded hover:bg-neutral-50 transition-colors"
                     >
                       <div
-                        className="w-3.5 h-3.5 rounded shrink-0"
+                        className="w-3.5 h-3.5 rounded shrink-0 border border-neutral-300"
                         style={{
                           backgroundColor: color,
-                          opacity: visibility[id] ? 0.4 : 0.15
+                          opacity: visibility[id] ? 0.5 : 0.2
                         }}
                       />
                       <div className="flex-1 min-w-0">
                         <div className="text-[9px] font-medium text-neutral-900 leading-tight">{label}</div>
-                        <div className="text-[8px] text-neutral-500 leading-tight">{desc}</div>
+                        <div className="text-[7.5px] text-neutral-500 leading-tight">{desc}</div>
                       </div>
                       <ToggleSwitch
-                        label={`${label} 20-minute zone`}
+                        label={`${label} coverage zone`}
                         checked={visibility[id]}
                         onChange={() => toggleVisibility(id)}
                       />
